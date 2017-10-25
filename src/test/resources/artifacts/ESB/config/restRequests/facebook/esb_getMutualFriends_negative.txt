@@ -2,6 +2,5 @@
 "apiUrl":"%s(apiUrl)",
 "apiVersion":"%s(apiVersion)",
 "accessToken":"%s(accessToken)",
-"userAId":"%s(userAId)",
-"userBId":"Negative"
+"userId":"Negative"
 }

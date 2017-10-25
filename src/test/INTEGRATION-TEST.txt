@@ -6,50 +6,69 @@ Product: WSO2 ESB Connector for Facebook + Integration Tests
 
     Tested Platforms: 
 
-    - UBUNTU 14.04, Mac OSX 10.9
+    - UBUNTU 16.04, Mac OSX 10.9
     - Ubuntu 13.04
-    - WSO2 ESB 4.9.0
+    - WSO2 ESB 6.1.1
     
- 1. Download ESB 4.9.0 by navigating the following the URL: https://svn.wso2.org/repos/wso2/scratch/ESB/
+ 1. Download EI 6.1.1 from official website.
 
- 2. The ESB should be configured as below.
+ 2. The EI should be configured as below.
 
- 	Navigate to location "ESB_HOME/repository/conf/axis2" and add/uncomment following lines in "axis2.xml".
+ 	Navigate to location "EI_HOME/conf/axis2" and add/uncomment following lines in "axis2.xml".
 
-                <messageFormatter contentType="text/javascript" class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>
+        <messageFormatter contentType="text/javascript" class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>
 
-                <messageFormatter contentType="text/html" class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>
+        <messageFormatter contentType="text/html" class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>
 
-                <messageBuilder contentType="text/javascript" class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
+        <messageBuilder contentType="text/javascript" class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
 
-                <messageBuilder contentType="text/html" class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
+        <messageBuilder contentType="text/html" class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
 
-                <messageFormatter contentType="application/json" class="org.apache.synapse.commons.json.JsonStreamFormatter"/>
+        <messageFormatter contentType="application/json" class="org.apache.synapse.commons.json.JsonStreamFormatter"/>
 
-                <messageBuilder contentType="application/json" class="org.apache.synapse.commons.json.JsonStreamBuilder"/>
+        <messageBuilder contentType="application/json" class="org.apache.synapse.commons.json.JsonStreamBuilder"/>
 
-                <messageFormatter contentType="application/octet-stream" class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>
+        <messageFormatter contentType="application/octet-stream" class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>
 
-                <messageBuilder contentType="application/octet-stream" class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
+        <messageBuilder contentType="application/octet-stream" class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
+
+ 4. Extract the certificate from browser(Mozilla Firefox) by navigating to facebook instance url(Eg:- https://www.facebook.com/)
+
+    Add the certificate obtained to "<EI_HOME>/repository/resources/security"
+    folder and "{FACEBOOK_HOME}/src/test/resources/keystores/products".
+
+        "<FACEBOOK_HOME>/src/test/resources/keystores/products"
+
+        Navigate to the above location from command prompt and execute
+            'keytool -importcert -file CERT_FILE_NAME -keystore wso2carbon.jks -alias "facebook"'
+            in command line to import facebook certificate in to keystore. Give "wso2carbon" as password.
+        NOTE : CERT_FILE_NAME is the file name which was extracted from facebook with  the extension,
+               change it accordingly. Remove the copied certificate.
+
+        "WSO2-EI-6.1.1/repository/resources/security"
+
+        Navigate to the above location from command prompt and execute
+         'keytool -importcert -file CERT_FILE_NAME -keystore client-truststore.jks -alias "facebook"'
+          in command line to import facebook certificate in to keystore. Give "wso2carbon" as password.
+          NOTE : CERT_FILE_NAME is the file name which was extracted from facebook with the extension,
+                 change it accordingly. Remove the copied certificate.
 
 	
 Steps to follow in setting integration test.
 
 
- 3.  Compress modified ESB as wso2esb-4.9.0.zip and copy that zip file in to location "{ESB_Connector_Home}/repository/".
+ 3. Compress modified EI as wso2ei-6.1.1.zip and copy that zip file in to location "{ESB_Connector_Home}/repository/".
 
- 4. Copy Property File, "facebook.properties" from location "facebook/integration-test/src/test/resources/artifacts/ESB
-        /connector/config" to location "Integration_Test/products/esb/4.8.1/modules/integration/connectors/src/test/
-        resources/artifacts/ESB/connector/config/" and edit using valid and relevant data.
+ 5. Update the Facebook properties file at location
+    "{Connector_Home}/src/test/resources/artifacts/ESB/connector/config" as below.
 
      Note:
-
-	This test suite can execute based on two scenarios.
+	 This test suite can execute based on two scenarios.
 		1. Use the given test account and parameters. - in this scenario you only need to replace accessToken ,
 		    pageAccessToken in property file
 		2. Setup new facebook account and follow all the instruction given below
         
- 17. Prerequisites for Facebook Connector Integration Testing
+  Prerequisites for Facebook Connector Integration Testing
 
     Follow these steps before start testing.
     a)  Create a fresh account in Facebook and Log on to https://www.facebook.com/ with the web browser.
@@ -190,6 +209,6 @@ Steps to follow in setting integration test.
 
         52)   eventId is the id of the created event.
         
- 8. Navigate to "{ESB_Connector_Home}/" and run the following command.
+ 8. Navigate to "{EI_Connector_Home}/" and run the following command.
        $ mvn clean install
 

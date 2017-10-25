@@ -34,14 +34,6 @@
             <file>unbanAppUser.xml</file>
             <description>Delete an existing user ban.</description>
         </component>
-        <component name="createAppUserGroup">
-            <file>createAppUserGroup.xml</file>
-            <description>Create a user group owned by the application.</description>
-        </component>
-        <component name="deleteAppUserGroup">
-            <file>deleteAppUserGroup.xml</file>
-            <description>Delete a user group owned by the application.</description>
-        </component>
         <component name="createAppUserRole">
             <file>createAppUserRole.xml</file>
             <description>Create a new role for a specific user for the application.</description>
@@ -49,14 +41,6 @@
         <component name="deleteAppUserRole">
             <file>deleteAppUserRole.xml</file>
             <description>Delete a specific users role for the application.</description>
-        </component>
-        <component name="createAppSubscription">
-            <file>createAppSubscription.xml</file>
-            <description>Create a subscription to an application for a callback URL.</description>
-        </component>
-        <component name="deleteAppSubscription">
-            <file>deleteAppSubscription.xml</file>
-            <description>Delete a created subscription.</description>
         </component>
         <component name="createAppAchievements">
             <file>createAppAchievements.xml</file>

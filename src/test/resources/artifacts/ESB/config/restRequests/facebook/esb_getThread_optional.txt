@@ -1,7 +1,0 @@
-{
-"apiUrl":"%s(apiUrl)",
-"apiVersion":"%s(apiVersion)",
-"accessToken":"%s(accessToken)",
-"threadId":"%s(threadId)",
-"fields":"id"
-}

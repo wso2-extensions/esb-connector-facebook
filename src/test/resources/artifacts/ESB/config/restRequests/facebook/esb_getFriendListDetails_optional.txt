@@ -2,6 +2,6 @@
 "apiUrl":"%s(apiUrl)",
 "apiVersion":"%s(apiVersion)",
 "accessToken":"%s(accessToken)",
-"friendlistId":"%s(friendlistId)",
-"fields":"id"
+"friendListId":"%s(friendListId)",
+"fields":"name"
 }

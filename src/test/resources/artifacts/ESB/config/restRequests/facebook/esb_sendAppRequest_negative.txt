@@ -1,8 +1,0 @@
-{
-"apiUrl":"%s(apiUrl)",
-"apiVersion":"%s(apiVersion)",
-"accessToken":"invalid",
-"userId":"%s(appUserId)",
-"message":"%s(message)",
-"data":"%s(description)"
-}

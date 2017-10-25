@@ -1,7 +1,0 @@
-{
-"apiUrl":"%s(apiUrl)",
-"apiVersion":"%s(apiVersion)",
-"accessToken":"%s(accessToken)",
-"groupId":"%s(userGroupId)",
-"message":"This is a sample group post"
-}

@@ -34,27 +34,5 @@
         <header name="X-FB-Debug" scope="transport" action="remove"/>
         <header name="X-FB-Rev" scope="transport" action="remove"/>
         <header name="WWW-Authenticate" scope="transport" action="remove"/>
-        <!-- Creating response payload manually -->
-        <filter source="$axis2:HTTP_SC" regex="[2][\d][\d]">
-            <then>
-                <property name="response" expression="json-eval($.text)"/>
-                <script language="js"><![CDATA[
-                    var message=mc.getProperty('response');
-                    var arr=message.split('=');
-                    mc.setProperty('token', arr[1]);
-                 ]]></script>
-                <payloadFactory media-type="json">
-                    <format>
-                        {
-                        "access_token":"$1"
-                        }
-                    </format>
-                    <args>
-                        <arg expression="get-property('token')"/>
-                    </args>
-                </payloadFactory>
-                <property name="messageType" value="application/json" scope="axis2"/>
-            </then>
-        </filter>
     </sequence>
 </template>

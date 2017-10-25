@@ -46,10 +46,6 @@
             <file>publishPagePost.xml</file>
             <description>Post to a pages wall.</description>
         </component>
-        <component name="createPageOffer">
-            <file>createPageOffer.xml</file>
-            <description>Create an offer for this page.</description>
-        </component>
         <component name="updatePagePicture">
             <file>updatePagePicture.xml</file>
             <description>Update a pages profile picture.</description>

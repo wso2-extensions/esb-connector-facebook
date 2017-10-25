@@ -245,7 +245,7 @@
         <call>
             <endpoint>
                 <http method="post"
-                      uri-template="legacy-encoding:{uri.var.apiUrl}/{uri.var.apiVersion}/{uri.var.pageId}/photos?access_token={uri.var.accessToken}{uri.var.params}"/>
+                      uri-template="legacy-encoding:{uri.var.apiUrl}/{uri.var.apiVersion}/{uri.var.pageId}/photos?access_token={uri.var.accessToken}{+uri.var.params}"/>
             </endpoint>
         </call>
         <!-- Remove response custom header information -->

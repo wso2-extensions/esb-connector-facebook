@@ -23,7 +23,7 @@
         <call>
             <endpoint>
                 <http method="get"
-                      uri-template="{uri.var.apiUrl}/{uri.var.apiVersion}/{uri.var.userId}/mutualfriends/?fields=context.fields(mutual_friends)&amp;access_token={uri.var.accessToken}"/>
+                      uri-template="{uri.var.apiUrl}/{uri.var.apiVersion}/{uri.var.userId}/?fields=context.fields(mutual_friends)&amp;access_token={uri.var.accessToken}"/>
             </endpoint>
         </call>
         <!-- Remove response custom header information -->

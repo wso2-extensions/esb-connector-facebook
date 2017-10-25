@@ -28,17 +28,13 @@
 		<dependency component="facebook-groups"/>
 		<dependency component="facebook-messages"/>
 		<dependency component="facebook-milestones"/>
-		<dependency component="facebook-offers"/>
 		<dependency component="facebook-pages"/>
 		<dependency component="facebook-photos"/>
 		<dependency component="facebook-posts"/>
-		<dependency component="facebook-reviews"/>
 		<dependency component="facebook-statusUpdates"/>
-		<dependency component="facebook-threads"/>
 		<dependency component="facebook-users"/>
 		<dependency component="facebook-videos"/> 
-		<dependency component="facebook-likes"/> 
-		<dependency component="facebook-insights"/> 
+		<dependency component="facebook-likes"/>
         <description>facebook connector libraries</description>
     </component>
 	<icon>icon/icon.jpg</icon>
