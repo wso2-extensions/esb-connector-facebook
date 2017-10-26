@@ -1,8 +1,0 @@
-{
-"apiUrl":"%s(apiUrl)",
-"apiVersion":"%s(apiVersion)",
-"accessToken":"%s(accessToken)",
-"userId":"%s(groupMember)",
-"message":"%s(message)",
-"data":""
-}

@@ -1,7 +1,7 @@
 {
 "apiUrl":"%s(apiUrl)",
 "apiVersion":"%s(apiVersion)",
-"accessToken":"%s(accessToken)",
-"resourceId":"%s(videoId)",
+"accessToken":"%s(pageAccessToken)",
+"resourceId":"%s(pagePostId)",
 "message":"%s(commentMessage)"
 }

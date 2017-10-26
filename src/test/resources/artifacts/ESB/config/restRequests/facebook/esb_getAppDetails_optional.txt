@@ -3,6 +3,5 @@
 "apiVersion":"%s(apiVersion)",
 "accessToken":"%s(appAccessToken)",
 "appId":"%s(appId)",
-"connection":"",
 "fields":"app_name"
 }

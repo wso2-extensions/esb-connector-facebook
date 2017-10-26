@@ -34,10 +34,6 @@
             <file>createMaybeRSVP.xml</file>
             <description>RSVP a user as maybe for an event.</description>
         </component>
-        <component name="postEventPhotos">
-            <file>postEventPhotos.xml</file>
-            <description>Post photos to an event.</description>
-        </component>
         <component name="createPostOnEventWall">
             <file>createPostOnEventWall.xml</file>
             <description>Create a post on the event wall.</description>

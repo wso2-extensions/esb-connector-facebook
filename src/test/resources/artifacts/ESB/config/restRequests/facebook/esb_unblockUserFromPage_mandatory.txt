@@ -2,6 +2,6 @@
 "apiUrl":"%s(apiUrl)",
 "apiVersion":"%s(apiVersion)",
 "accessToken":"%s(pageAccessToken)",
-"userId":"%s(pageUsreId)",
+"userId":"%s(pageUserId)",
 "pageId":"%s(pageId)"
 }

@@ -19,6 +19,7 @@
 <template name="updateAppDetails" xmlns="http://ws.apache.org/ns/synapse">
     <parameter name="appId" description="The appId"/>
     <parameter name="migrations" description="Migrations settings for this app"/>
+    <parameter name="canvasUrl" description="The non-secure URL from which Canvas app content is loaded"/>
     <parameter name="restrictions" description="Demographic restrictions set for this app"/>
     <parameter name="appName" description="App name"/>
     <parameter name="appType" description="App type"/>

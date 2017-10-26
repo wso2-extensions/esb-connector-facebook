@@ -1,7 +1,0 @@
-{
-"apiUrl":"%s(apiUrl)",
-"apiVersion":"%s(apiVersion)",
-"accessToken":"%s(accessToken)",
-"appId":"%s(appId)",
-"fields":"id"
-}

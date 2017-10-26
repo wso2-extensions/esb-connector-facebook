@@ -38,25 +38,9 @@
                         <noStory>{$url:noStory}</noStory>
                     </facebook.postPhotoToAlbum>
                 </case>
-                <case regex="urn:updateEventProfilePicture">
-                    <facebook.updateEventProfilePicture>
-                        <eventId>{$url:eventId}</eventId>
-                        <apiUrl>{$url:apiUrl}</apiUrl>
-                        <apiVersion>{$url:apiVersion}</apiVersion>
-                        <accessToken>{$url:accessToken}</accessToken>
-                    </facebook.updateEventProfilePicture>
-                </case>
-                <case regex="urn:postEventPhotos">
-                    <facebook.postEventPhotos>
-                        <eventId>{$url:eventId}</eventId>
-                        <apiUrl>{$url:apiUrl}</apiUrl>
-                        <apiVersion>{$url:apiVersion}</apiVersion>
-                        <accessToken>{$url:accessToken}</accessToken>
-                    </facebook.postEventPhotos>
-                </case>
                 <case regex="urn:publishPhoto">
                     <facebook.publishPhoto>
-                        <userId>{$url:user_id}</userId>
+                        <userId>{$url:userId}</userId>
                         <apiUrl>{$url:apiUrl}</apiUrl>
                         <apiVersion>{$url:apiVersion}</apiVersion>
                         <accessToken>{$url:accessToken}</accessToken>

@@ -324,22 +324,6 @@
                         <commentId>{$ctx:commentId}</commentId>
                     </facebook.deleteComment>
                 </case>
-                <case regex="urn:createUserNote">
-                    <facebook.createUserNote>
-                        <message>{$ctx:message}</message>
-                        <subject>{$ctx:subject}</subject>
-                    </facebook.createUserNote>
-                </case>
-                <case regex="urn:getNoteDetails">
-                    <facebook.getNoteDetails>
-                        <noteId>{$ctx:noteId}</noteId>
-                    </facebook.getNoteDetails>
-                </case>
-                <case regex="urn:deleteNote">
-                    <facebook.deleteNote>
-                        <noteId>{$ctx:noteId}</noteId>
-                    </facebook.deleteNote>
-                </case>
                 <case regex="urn:getAppAccessToken">
                     <facebook.getAppAccessToken>
                         <clientId>{$ctx:clientId}</clientId>
@@ -354,8 +338,7 @@
                 </case>
                 <case regex="urn:getMutualFriends">
                     <facebook.getMutualFriends>
-                        <userAId>{$ctx:userAId}</userAId>
-                        <userBId>{$ctx:userBId}</userBId>
+                        <userId>{$ctx:userId}</userId>
                     </facebook.getMutualFriends>
                 </case>
                 <case regex="urn:publishNotification">
@@ -378,34 +361,11 @@
                         <achievement>{$ctx:achievement}</achievement>
                     </facebook.deleteAppAchievements>
                 </case>
-                <case regex="urn:createUserAchievement">
-                    <facebook.createUserAchievement>
-                        <achievement>{$ctx:achievement}</achievement>
-                    </facebook.createUserAchievement>
-                </case>
-                <case regex="urn:deleteUserAchievement">
-                    <facebook.deleteUserAchievement>
-                        <achievement>{$ctx:achievement}</achievement>
-                    </facebook.deleteUserAchievement>
-                </case>
-                <case regex="urn:createAppSubscription">
-                    <facebook.createAppSubscription>
-                        <appId>{$ctx:appId}</appId>
-                        <fields>{$ctx:fields}</fields>
-                        <object>{$ctx:object}</object>
-                        <callbackUrl>{$ctx:callbackUrl}</callbackUrl>
-                        <verifyToken>{$ctx:verifyToken}</verifyToken>
-                    </facebook.createAppSubscription>
-                </case>
-                <case regex="urn:deleteAppSubscription">
-                    <facebook.deleteAppSubscription>
-                        <appId>{$ctx:appId}</appId>
-                        <object>{$ctx:object}</object>
-                    </facebook.deleteAppSubscription>
-                </case>
                 <case regex="urn:getAppDetails">
                     <facebook.getAppDetails>
                         <appId>{$ctx:appId}</appId>
+                        <fields>{$ctx:fields}</fields>
+                        <connection>{$ctx:connection}</connection>
                     </facebook.getAppDetails>
                 </case>
                 <case regex="urn:isAppUserBanned">
@@ -478,19 +438,6 @@
                         <userId>{$ctx:userId}</userId>
                     </facebook.unblockUserFromPage>
                 </case>
-                <case regex="urn:createPageEvent">
-                    <facebook.createPageEvent>
-                        <pageId>{$ctx:pageId}</pageId>
-                        <name>{$ctx:name}</name>
-                        <startTime>{$ctx:startTime}</startTime>
-                        <endTime>{$ctx:endTime}</endTime>
-                        <description>{$ctx:description}</description>
-                        <location>{$ctx:location}</location>
-                        <locationId>{$ctx:locationId}</locationId>
-                        <ticketUri>{$ctx:ticketUri}</ticketUri>
-                        <noFeedStory>{$ctx:noFeedStory}</noFeedStory>
-                    </facebook.createPageEvent>
-                </case>
                 <case regex="urn:publishPagePost">
                     <facebook.publishPagePost>
                         <pageId>{$ctx:pageId}</pageId>
@@ -541,8 +488,7 @@
                         <authDialogDataHelpUrl>{$ctx:authDialogDataHelpUrl}</authDialogDataHelpUrl>
                         <authDialogHeadline>{$ctx:authDialogHeadline}</authDialogHeadline>
                         <authDialogPermsExplanation>{$ctx:authDialogPermsExplanation}</authDialogPermsExplanation>
-                        <authReferralDefaultActivityPrivacy>{$ctx:authReferralDefaultActivityPrivacy}
-                        </authReferralDefaultActivityPrivacy>
+                        <authReferralDefaultActivityPrivacy>{$ctx:authReferralDefaultActivityPrivacy}</authReferralDefaultActivityPrivacy>
                         <authReferralEnabled>{$ctx:authReferralEnabled}</authReferralEnabled>
                         <authReferralExtendedPerms>{$ctx:authReferralExtendedPerms}</authReferralExtendedPerms>
                         <authReferralFriendPerms>{$ctx:authReferralFriendPerms}</authReferralFriendPerms>
@@ -570,17 +516,6 @@
                         <websiteUrl>{$ctx:websiteUrl}</websiteUrl>
                     </facebook.updateAppDetails>
                 </case>
-                <case regex="urn:createEvent">
-                    <facebook.createEvent>
-                        <name>{$ctx:name}</name>
-                        <startTime>{$ctx:startTime}</startTime>
-                        <endTime>{$ctx:endTime}</endTime>
-                        <description>{$ctx:description}</description>
-                        <location>{$ctx:location}</location>
-                        <locationId>{$ctx:locationId}</locationId>
-                        <privacyType>{$ctx:privacyType}</privacyType>
-                    </facebook.createEvent>
-                </case>
                 <case regex="urn:publishPageMilestone">
                     <facebook.publishPageMilestone>
                         <title>{$ctx:title}</title>
@@ -602,18 +537,6 @@
                         <description>{$ctx:description}</description>
                     </facebook.updatePageMilestone>
                 </case>
-                <case regex="urn:addMembersToFriendList">
-                    <facebook.addMembersToFriendList>
-                        <friendListId>{$ctx:friendListId}</friendListId>
-                        <members>{$ctx:members}</members>
-                    </facebook.addMembersToFriendList>
-                </case>
-                <case regex="urn:removeMembersFromFriendList">
-                    <facebook.removeMembersFromFriendList>
-                        <friendListId>{$ctx:friendListId}</friendListId>
-                        <members>{$ctx:members}</members>
-                    </facebook.removeMembersFromFriendList>
-                </case>
                 <case regex="urn:getFriendListDetails">
                     <facebook.getFriendListDetails>
                         <friendListId>{$ctx:friendListId}</friendListId>
@@ -621,18 +544,10 @@
                         <connection>{$ctx:connection}</connection>
                     </facebook.getFriendListDetails>
                 </case>
-                <case regex="urn:deleteFriendList">
-                    <facebook.deleteFriendList>
-                        <friendListId>{$ctx:friendListId}</friendListId>
-                    </facebook.deleteFriendList>
-                </case>
-                <case regex="urn:getAppReview">
-                    <facebook.getAppReview>
-                        <appId>{$ctx:appId}</appId>
-                    </facebook.getAppReview>
-                </case>
                 <case regex="urn:getUserDetails">
-                    <facebook.getUserDetails/>
+                    <facebook.getUserDetails>
+                        <fields>{$ctx:fields}</fields>
+                    </facebook.getUserDetails>
                 </case>
                 <case regex="urn:getPageMilestoneDetails">
                     <facebook.getPageMilestoneDetails>
@@ -670,29 +585,6 @@
                         <objectAttachment>{$ctx:objectAttachment}</objectAttachment>
                     </facebook.createPost>
                 </case>
-                <case regex="urn:createPageOffer">
-                    <facebook.createPageOffer>
-                        <title>{$ctx:title}</title>
-                        <pageId>{$ctx:pageId}</pageId>
-                        <expirationTime>{$ctx:expirationTime}</expirationTime>
-                        <terms>{$ctx:terms}</terms>
-                        <imageUrl>{$ctx:imageUrl}</imageUrl>
-                        <message>{$ctx:message}</message>
-                        <claimLimit>{$ctx:claimLimit}</claimLimit>
-                        <couponType>{$ctx:couponType}</couponType>
-                        <qrcode>{$ctx:qrcode}</qrcode>
-                        <barcode>{$ctx:barcode}</barcode>
-                        <barcodeType>{$ctx:barcodeType}</barcodeType>
-                        <redemptionLink>{$ctx:redemptionLink}</redemptionLink>
-                        <redemptionCode>{$ctx:redemptionCode}</redemptionCode>
-                        <feedTargeting>{$ctx:feedTargeting}</feedTargeting>
-                        <targeting>{$ctx:targeting}</targeting>
-                        <couponRequired>{$ctx:couponRequired}</couponRequired>
-                        <published>{$ctx:published}</published>
-                        <scheduledPublishTime>{$ctx:scheduledPublishTime}</scheduledPublishTime>
-                        <reminderTime>{$ctx:reminderTime}</reminderTime>
-                    </facebook.createPageOffer>
-                </case>
                 <case regex="urn:getPost">
                     <facebook.getPost>
                         <postId>{$ctx:postId}</postId>
@@ -723,20 +615,6 @@
                         <offsetY>{$ctx:offsetY}</offsetY>
                     </facebook.createPhotoTag>
                 </case>
-                <case regex="urn:updatePhotoTag">
-                    <facebook.updatePhotoTag>
-                        <to>{$ctx:to}</to>
-                        <photoId>{$ctx:photoId}</photoId>
-                        <y>{$ctx:y}</y>
-                        <x>{$ctx:x}</x>
-                    </facebook.updatePhotoTag>
-                </case>
-                <case regex="urn:deletePhotoTag">
-                    <facebook.deletePhotoTag>
-                        <to>{$ctx:to}</to>
-                        <photoId>{$ctx:photoId}</photoId>
-                    </facebook.deletePhotoTag>
-                </case>
                 <case regex="urn:deletePhoto">
                     <facebook.deletePhoto>
                         <photoId>{$ctx:photoId}</photoId>
@@ -762,23 +640,13 @@
                 <case regex="urn:getMessage">
                     <facebook.getMessage>
                         <messageId>{$ctx:messageId}</messageId>
+                        <fields>{$ctx:fields}</fields>
                     </facebook.getMessage>
                 </case>
                 <case regex="urn:getPhotoDetails">
                     <facebook.getPhotoDetails>
                         <photoId>{$ctx:photoId}</photoId>
                     </facebook.getPhotoDetails>
-                </case>
-                <case regex="urn:createGroupEvent">
-                    <facebook.createGroupEvent>
-                        <groupId>{$ctx:groupId}</groupId>
-                        <name>{$ctx:name}</name>
-                        <startTime>{$ctx:startTime}</startTime>
-                        <endTime>{$ctx:endTime}</endTime>
-                        <description>{$ctx:description}</description>
-                        <location>{$ctx:location}</location>
-                        <locationId>{$ctx:locationId}</locationId>
-                    </facebook.createGroupEvent>
                 </case>
                 <case regex="urn:createGroupPost">
                     <facebook.createGroupPost>
@@ -790,20 +658,6 @@
                         <caption>{$ctx:caption}</caption>
                         <description>{$ctx:description}</description>
                     </facebook.createGroupPost>
-                </case>
-                <case regex="urn:createPageNote">
-                    <facebook.createPageNote>
-                        <message>{$ctx:message}</message>
-                        <subject>{$ctx:subject}</subject>
-                        <pageId>{$ctx:pageId}</pageId>
-                    </facebook.createPageNote>
-                </case>
-                <case regex="urn:updatePageSettings">
-                    <facebook.updatePageSettings>
-                        <pageId>{$ctx:pageId}</pageId>
-                        <setting>{$ctx:setting}</setting>
-                        <value>{$ctx:value}</value>
-                    </facebook.updatePageSettings>
                 </case>
                 <case regex="urn:replyToConversation">
                     <facebook.replyToConversation>

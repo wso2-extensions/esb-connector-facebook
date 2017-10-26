@@ -1,13 +1,13 @@
 /**
- *  Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
- *  WSO2 Inc. licenses this file to you under the Apache License,
- *  Version 2.0 (the "License"); you may not use this file except
- *  in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * <p>
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -47,8 +47,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
 
     @BeforeClass(alwaysRun = true)
     public void setEnvironment() throws Exception {
-
-        init("facebook-connector-1.0.1-SNAPSHOT");
+        String connectorName =
+                System.getProperty("connector_name") + "-connector-" + System.getProperty("connector_version") + ".zip";
+        init(connectorName);
         esbRequestHeadersMap.put("Accept-Charset", "UTF-8");
         esbRequestHeadersMap.put("Content-Type", "application/json");
 
@@ -57,9 +58,7 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         timeOut = Long.parseLong(connectorProperties.getProperty("timeOut"));
 
         String multipartPoxyName = connectorProperties.getProperty("multipartProxyName");
-
-        multipartProxyUrl = getProxyServiceURL(multipartPoxyName);
-
+        multipartProxyUrl = getProxyServiceURLHttp(multipartPoxyName);
     }
 
     /**
@@ -68,13 +67,16 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * @throws JSONException
      * @throws IOException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getEventDetails} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getEventDetails} integration test with mandatory parameters.")
     public void testGetEventDetailsWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getEventDetails");
         String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/" + connectorProperties.getProperty("eventId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
+                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/"
+                        + connectorProperties.getProperty("eventId") + "?access_token=" + connectorProperties
+                        .getProperty("accessToken");
 
         RestResponse< JSONObject > esbRestResponse =
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getEventDetails_mandatory.txt");
@@ -90,13 +92,17 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for getEventDetails method with optional parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetEventDetailsWithMandatoryParameters"}, description = "facebook {getEventDetails} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetEventDetailsWithMandatoryParameters" },
+          description = "facebook {getEventDetails} integration test with optional parameters.")
     public void testGetEventDetailsWithOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getEventDetails");
         String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/" + connectorProperties.getProperty("eventId")
-                        + "/?access_token=" + connectorProperties.getProperty("accessToken") + "&fields=owner";
+                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/"
+                        + connectorProperties.getProperty("eventId") + "/?access_token=" + connectorProperties
+                        .getProperty("accessToken") + "&fields=owner";
 
         RestResponse< JSONObject > esbRestResponse =
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getEventDetails_optional.txt");
@@ -111,7 +117,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for getEventDetails method.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetEventDetailsWithOptionalParameters"}, description = "facebook {getEventDetails} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetEventDetailsWithOptionalParameters" },
+          description = "facebook {getEventDetails} integration test with negative case.")
     public void testGetEventDetailsWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getEventDetails");
@@ -131,15 +140,19 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetEventDetailsWithMandatoryParameters"}, description = "facebook {createAttendingRSVP} integration test with mandatory parameters.")
-    public void testCreateAttendingRSVPWithMandatoryParameters() throws IOException, JSONException,
-            InterruptedException {
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetEventDetailsWithMandatoryParameters" },
+          description = "facebook {createAttendingRSVP} integration test with mandatory parameters.")
+    public void testCreateAttendingRSVPWithMandatoryParameters()
+            throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:createAttendingRSVP");
 
         // This API call is to reset User attending status
         String apiResetEndPoint =
-                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/" + connectorProperties.getProperty("eventId") + "/declined";
+                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/"
+                        + connectorProperties.getProperty("eventId") + "/declined";
         sendJsonRestRequest(apiResetEndPoint, "POST", apiRequestHeadersMap, "api_accessToken.txt");
 
         sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createRSVP_mandatory.txt");
@@ -147,8 +160,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         Thread.sleep(timeOut);
 
         String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/" + connectorProperties.getProperty("eventId")
-                        + "/attending?access_token=" + connectorProperties.getProperty("accessToken");
+                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/"
+                        + connectorProperties.getProperty("eventId") + "/attending?access_token=" + connectorProperties
+                        .getProperty("accessToken");
 
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
@@ -171,7 +185,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for createAttendingRSVP method .
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createAttendingRSVP} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {createAttendingRSVP} integration test with negative case.")
     public void testCreateAttendingRSVPWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:createAttendingRSVP");
@@ -191,14 +207,19 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetEventDetailsWithMandatoryParameters"}, description = "facebook {createDeclinedRSVP} integration test with mandatory parameters.")
-    public void testCreateDeclinedRSVPWithMandatoryParameters() throws IOException, JSONException, InterruptedException {
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetEventDetailsWithMandatoryParameters" },
+          description = "facebook {createDeclinedRSVP} integration test with mandatory parameters.")
+    public void testCreateDeclinedRSVPWithMandatoryParameters()
+            throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:createDeclinedRSVP");
 
         // This API call is to reset User attending status
         String apiResetEndPoint =
-                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/" + connectorProperties.getProperty("eventId") + "/attending";
+                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/"
+                        + connectorProperties.getProperty("eventId") + "/attending";
         sendJsonRestRequest(apiResetEndPoint, "POST", apiRequestHeadersMap, "api_accessToken.txt");
 
         sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createRSVP_mandatory.txt");
@@ -228,7 +249,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for createDeclinedRSVP method .
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createDeclinedRSVP} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {createDeclinedRSVP} integration test with negative case.")
     public void testCreateDeclinedRSVPWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:createDeclinedRSVP");
@@ -248,14 +271,18 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetEventDetailsWithMandatoryParameters"}, description = "facebook {createMaybeRSVP} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetEventDetailsWithMandatoryParameters" },
+          description = "facebook {createMaybeRSVP} integration test with mandatory parameters.")
     public void testCreateMaybeRSVPWithMandatoryParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:createMaybeRSVP");
 
         // This API call is to reset User attending status
         String apiResetEndPoint =
-                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/" + connectorProperties.getProperty("eventId") + "/attending";
+                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/"
+                        + connectorProperties.getProperty("eventId") + "/attending";
         sendJsonRestRequest(apiResetEndPoint, "POST", apiRequestHeadersMap, "api_accessToken.txt");
 
         sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createRSVP_mandatory.txt");
@@ -286,7 +313,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for createMaybeRSVP method .
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createMaybeRSVP} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {createMaybeRSVP} integration test with negative case.")
     public void testcreateMaybeRSVPWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:createMaybeRSVP");
@@ -305,7 +334,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Positive test case for createPostOnEventWall method with mandatory parameters. Some times direct call
      * giving an unexpected error.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetEventDetailsWithMandatoryParameters"}, description = "facebook {createPostOnEventWall} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetEventDetailsWithMandatoryParameters" },
+          description = "facebook {createPostOnEventWall} integration test with mandatory parameters.")
     public void testCreatePostOnEventWallWithMandatoryParameters() throws IOException, JSONException {
 
         try {
@@ -320,7 +352,8 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
             Thread.sleep(timeOut);
 
             String apiEndPoint =
-                    connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/" + connectorProperties.getProperty("eventId") + "/feed";
+                    connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion")
+                            + "/" + connectorProperties.getProperty("eventId") + "/feed";
 
             RestResponse< JSONObject > apiRestResponse =
                     sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap,
@@ -342,9 +375,12 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreatePostOnEventWallWithMandatoryParameters"}, description = "facebook {createPostOnEventWall} integration test with optional parameters.")
-    public void testCreatePostOnEventWallWithOptionalParameters() throws IOException, JSONException,
-            InterruptedException {
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreatePostOnEventWallWithMandatoryParameters" },
+          description = "facebook {createPostOnEventWall} integration test with optional parameters.")
+    public void testCreatePostOnEventWallWithOptionalParameters()
+            throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:createPostOnEventWall");
 
@@ -355,7 +391,8 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
 
         Thread.sleep(timeOut);
         String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/" + connectorProperties.getProperty("eventId") + "/feed";
+                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/"
+                        + connectorProperties.getProperty("eventId") + "/feed";
 
         RestResponse< JSONObject > apiRestResponse =
                 sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_createPostOnEventWall_optional.txt");
@@ -369,7 +406,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for createPostOnEventWall method.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetEventDetailsWithMandatoryParameters"}, description = "facebook {createPostOnEventWall} integration test with negative.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetEventDetailsWithMandatoryParameters" },
+          description = "facebook {createPostOnEventWall} integration test with negative.")
     public void testCreatePostOnEventWallWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:createPostOnEventWall");
@@ -391,16 +431,20 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {uploadVideo} integration test positive case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {uploadVideo} integration test positive case.")
     public void testUploadVideoMandatoryParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:uploadVideo");
 
         headersMap.put("Action", "urn:uploadVideo");
 
-        MultipartFormdataProcessor multipartProcessor =
-                new MultipartFormdataProcessor(multipartProxyUrl + "?apiUrl=" + connectorProperties.getProperty("apiUrl") + "&apiVersion=" + connectorProperties.getProperty("apiVersion") + "&resourceId="
-                        + connectorProperties.getProperty("userId") + "&accessToken=" + connectorProperties.getProperty("accessToken"), headersMap);
+        MultipartFormdataProcessor multipartProcessor = new MultipartFormdataProcessor(
+                multipartProxyUrl + "?apiUrl=" + connectorProperties.getProperty("apiUrl") + "&apiVersion="
+                        + connectorProperties.getProperty("apiVersion") + "&resourceId=" + connectorProperties
+                        .getProperty("userId") + "&accessToken=" + connectorProperties.getProperty("accessToken"),
+                headersMap);
 
         multipartProcessor.addFormDataToRequest("message", "via new ESb");
         //multipartProcessor.addFormDataToRequest("access_token", connectorProperties.getProperty("accessToken"));
@@ -417,7 +461,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for getVideoDetails method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testUploadVideoMandatoryParameters"}, description = "facebook {getVideoDetails} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testUploadVideoMandatoryParameters" },
+          description = "facebook {getVideoDetails} integration test with mandatory parameters.")
     public void testGetVideoDetailsWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getVideoDetails");
@@ -426,21 +473,25 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getVideoDetails_mandatory.txt");
 
         String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/" + connectorProperties.getProperty("videoId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
+                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/"
+                        + connectorProperties.getProperty("videoId") + "?access_token=" + connectorProperties
+                        .getProperty("accessToken");
 
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
         Assert.assertEquals(esbRestResponse.getBody().get("id"), apiRestResponse.getBody().get("id"));
 
-        Assert.assertEquals(esbRestResponse.getBody().get("source"), apiRestResponse.getBody().get("source"));
+        Assert.assertEquals(esbRestResponse.getBody().get("updated_time"), apiRestResponse.getBody().get("updated_time"));
 
     }
 
     /**
      * Positive test case for getVideoDetails method with optional parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testUploadVideoMandatoryParameters"}, description = "facebook {getVideoDetails} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testUploadVideoMandatoryParameters" },
+          description = "facebook {getVideoDetails} integration test with optional parameters.")
     public void testGetVideoDetailsWithOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getVideoDetails");
@@ -448,8 +499,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         RestResponse< JSONObject > esbRestResponse =
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getVideoDetails_optional.txt");
         String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/" + connectorProperties.getProperty("videoId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken") + "&fields=from,picture";
+                connectorProperties.getProperty("apiUrl") + "/" + connectorProperties.getProperty("apiVersion") + "/"
+                        + connectorProperties.getProperty("videoId") + "?access_token=" + connectorProperties
+                        .getProperty("accessToken") + "&fields=from,picture";
 
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
@@ -464,7 +516,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for getVideoDetails method.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getVideoDetails} integration test with negative.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getVideoDetails} integration test with negative.")
     public void testGetVideoDetailsWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getVideoDetails");
@@ -481,13 +535,15 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
 
     }
 
-
     /**
      * Positive test case for createComment method with mandatory parameters.
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testUploadVideoMandatoryParameters"}, description = "facebook {createComment} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testPublishPagePostWithMandatoryParameters" },
+          description = "facebook {createComment} integration test with mandatory parameters.")
     public void testCreateCommentWithMandatoryParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:createComment");
@@ -504,7 +560,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                         + connectorProperties.getProperty("accessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
-        Assert.assertTrue(apiRestResponse.getBody().has("id"));
+        Assert.assertEquals(connectorProperties.getProperty("commentId"), apiRestResponse.getBody().get("id"));
+        Assert.assertEquals(connectorProperties.getProperty("commentMessage"),
+                apiRestResponse.getBody().get("message"));
 
     }
 
@@ -513,7 +571,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testUploadVideoMandatoryParameters"}, description = "facebook {createComment} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testUploadVideoMandatoryParameters" },
+          description = "facebook {createComment} integration test with negative case.")
     public void testCreateCommentWithNegativeCase() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:createComment");
@@ -537,7 +598,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateCommentWithMandatoryParameters"}, description = "facebook {updateComment} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreateCommentWithMandatoryParameters" },
+          description = "facebook {updateComment} integration test with mandatory parameters.")
     public void testUpdateCommentWithMandatoryParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:updateComment");
@@ -564,13 +628,16 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         }
 
         Assert.assertNotEquals(originalComment, updatedComment);
-
+        Assert.assertEquals(updatedComment, "Updated Comment");
     }
 
     /**
      * Negative test case for updateComment method.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testUpdateCommentWithMandatoryParameters"}, description = "facebook {updateComment} integration test with negative.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testUpdateCommentWithMandatoryParameters" },
+          description = "facebook {updateComment} integration test with negative.")
     public void testUpdateCommentWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:updateComment");
@@ -591,7 +658,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateCommentWithMandatoryParameters"}, description = "facebook {createLike} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreateCommentWithMandatoryParameters" },
+          description = "facebook {createLike} integration test with mandatory parameters.")
     public void testCreateLikeWithMandatoryParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:createLike");
@@ -614,18 +684,21 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for CreateLike method.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateLikeWithMandatoryParameters"}, description = "facebook {CreateLike} integration test with negative.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreateLikeWithMandatoryParameters" },
+          description = "facebook {CreateLike} integration test with negative.")
     public void testCreateLikeWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:createLike");
 
         String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("commentId") + "/likes";
+                connectorProperties.getProperty("apiUrl") + "invalid" + "/likes";
         RestResponse< JSONObject > apiRestResponse =
                 sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_accessToken.txt");
 
         RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createLike_mandatory.txt");
+                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createLike_negative.txt");
 
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
 
@@ -634,7 +707,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for getCommentDetails method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateLikeWithMandatoryParameters"}, description = "facebook {getCommentDetails} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreateLikeWithMandatoryParameters" },
+          description = "facebook {getCommentDetails} integration test with mandatory parameters.")
     public void testGetCommentDetailsWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getCommentDetails");
@@ -658,7 +734,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for getCommentDetails method with optional parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetCommentDetailsWithMandatoryParameters"}, description = "facebook {getCommentDetails} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetCommentDetailsWithMandatoryParameters" },
+          description = "facebook {getCommentDetails} integration test with optional parameters.")
     public void testGetCommentDetailsWithOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getCommentDetails");
@@ -679,7 +758,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for getCommentDetails method.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetCommentDetailsWithOptionalParameters"}, description = "facebook {getCommentDetails} integration test with negative.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetCommentDetailsWithOptionalParameters" },
+          description = "facebook {getCommentDetails} integration test with negative.")
     public void testGetCommentDetailsWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getCommentDetails");
@@ -700,7 +782,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetCommentDetailsWithOptionalParameters"}, description = "facebook {deleteLike} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetCommentDetailsWithOptionalParameters" },
+          description = "facebook {deleteLike} integration test with mandatory parameters.")
     public void testDeleteLikeWithMandatoryParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:deleteLike");
@@ -721,18 +806,21 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for deleteLike method.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testDeleteLikeWithMandatoryParameters"}, description = "facebook {deleteLike} integration test with negative.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testDeleteLikeWithMandatoryParameters" },
+          description = "facebook {deleteLike} integration test with negative.")
     public void testDeleteLikeWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:deleteLike");
 
         String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("commentId") + "/likes";
+                connectorProperties.getProperty("apiUrl") + "invalid" + "/likes";
         RestResponse< JSONObject > apiRestResponse =
                 sendJsonRestRequest(apiEndPoint, "DELETE", apiRequestHeadersMap, "api_accessToken.txt");
 
         RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createLike_mandatory.txt");
+                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createLike_negative.txt");
 
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
 
@@ -743,8 +831,12 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testDeleteLikeWithNegativeCase",
-            "testUpdateCommentWithMandatoryParameters"}, description = "facebook {deleteComment} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = {
+                  "testDeleteLikeWithNegativeCase", "testUpdateCommentWithMandatoryParameters"
+          },
+          description = "facebook {deleteComment} integration test with mandatory parameters.")
     public void testDeleteCommentWithMandatoryParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:deleteComment");
@@ -766,7 +858,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for deleteComment method .
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testDeleteCommentWithMandatoryParameters"}, description = "facebook {deleteComment} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testDeleteCommentWithMandatoryParameters" },
+          description = "facebook {deleteComment} integration test with negative case.")
     public void testDeleteCommentWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:deleteComment");
@@ -781,170 +876,20 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "DELETE", apiRequestHeadersMap);
 
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-
-    }
-
-    /**
-     * Positive test case for createUserNote method with mandatory parameters.
-     *
-     * @throws InterruptedException
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createUserNote} integration test with mandatory parameters.")
-    public void testCreateUserNoteWithMandatoryParameters() throws IOException, JSONException, InterruptedException {
-
-        esbRequestHeadersMap.put("Action", "urn:createUserNote");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createUserNote_mandatory.txt");
-        String noteId = esbRestResponse.getBody().get("id").toString();
-        connectorProperties.put("noteId", noteId);
-        Thread.sleep(timeOut);
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("noteId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-
-        Assert.assertEquals(noteId, apiRestResponse.getBody().get("id"));
-
-    }
-
-    /**
-     * Negative test case for createUserNote method .
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateUserNoteWithMandatoryParameters"}, description = "facebook {createUserNote} integration test with negative case.")
-    public void testCreateUserNoteWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createUserNote");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createUserNote_negative.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("userId") + "/notes";
-
-        RestResponse< JSONObject > apiRestResponse =
-                sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_accessToken.txt");
-
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-
-    }
-
-    /**
-     * Positive test case for getNoteDetails method with mandatory parameters.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateUserNoteWithNegativeCase"}, description = "facebook {getNoteDetails} integration test with mandatory parameters.")
-    public void testGetNoteDetailsWithMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:getNoteDetails");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getNoteDetails_mandatory.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("noteId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-
-        Assert.assertEquals(esbRestResponse.getBody().get("id"), apiRestResponse.getBody().get("id"));
-        Assert.assertEquals(esbRestResponse.getBody().get("message"), apiRestResponse.getBody().get("message"));
-        Assert.assertEquals(esbRestResponse.getBody().get("subject"), apiRestResponse.getBody().get("subject"));
-
-    }
-
-    /**
-     * Positive test case for getNoteDetails method with optional parameters.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateUserNoteWithNegativeCase"}, description = "facebook {getNoteDetails} integration test with optional parameters.")
-    public void testGetNoteDetailsWithOptionalParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:getNoteDetails");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getNoteDetails_optional.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("noteId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken") + "&fields=id,created_time";
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-
-        Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
-
-    }
-
-    /**
-     * Negative test case for getNoteDetails method.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetNoteDetailsWithOptionalParameters"}, description = "facebook {urn:getNoteDetails} integration test with negative case.")
-    public void testGetNoteDetailsWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:getNoteDetails");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getNoteDetails_negative.txt");
-
-        String apiEndPoint =
-                "https://graph.facebook.com/Negative?access_token=" + connectorProperties.getProperty("accessToken");
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-
-    }
-
-    /**
-     * Positive test case for deleteNote method with mandatory parameters.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetNoteDetailsWithNegativeCase"}, description = "facebook {deleteNote} integration test with mandatory parameters.")
-    public void testDeleteNoteWithMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deleteNote");
-
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deleteNote_mandatory.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("noteId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().has("error"));
-
-    }
-
-    /**
-     * Negative test case for deleteNote method with Negative Case.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testDeleteNoteWithMandatoryParameters"}, description = "facebook {deleteNote} integration test with Negative Case.")
-    public void testDeleteNoteWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deleteNote");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deleteNote_mandatory.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("noteId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "DELETE", apiRequestHeadersMap);
-
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-
     }
 
     /**
      * Positive test case for getAppAccessToken method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getAppAccessToken} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getAppAccessToken} integration test with mandatory parameters.")
     public void testgetAppAccessTokenWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getAppAccessToken");
 
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getAppAccessToken_mandatory.txt");
+        RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap,
+                "esb_getAppAccessToken_mandatory.txt");
         String appAccessToken = esbRestResponse.getBody().get("access_token").toString();
 
         connectorProperties.put("appAccessToken", appAccessToken);
@@ -961,7 +906,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for getAppAccessToken method .
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getAppAccessToken} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getAppAccessToken} integration test with negative case.")
     public void testgetAppAccessTokenWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getAppAccessToken");
@@ -976,15 +923,17 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
 
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
-        Assert.assertEquals(esbRestResponse.getBody().get("error").toString(), apiRestResponse.getBody().get("error")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message"),
+                apiRestResponse.getBody().getJSONObject("error").get("message"));
 
     }
 
     /**
      * Positive test case for isFriend method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {isFriend} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {isFriend} integration test with mandatory parameters.")
     public void testIsFriendWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:isFriend");
@@ -1007,7 +956,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for isFriend method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {isFriend} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {isFriend} integration test with optional parameters.")
     public void testIsFriendWithOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:isFriend");
@@ -1041,7 +992,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for isFriend method .
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {isFriend} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {isFriend} integration test with negative case.")
     public void testIsFriendWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:isFriend");
@@ -1062,7 +1015,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for getMutualFriends method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getMutualFriends} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getMutualFriends} integration test with mandatory parameters.")
     public void testGetMutualFriendsWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getMutualFriends");
@@ -1071,55 +1026,26 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getMutualFriends_mandatory.txt");
 
         String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("userAId")
-                        + "/mutualfriends/" + connectorProperties.getProperty("userBId") + "?access_token="
+                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("userId")
+                        + "?fields=context.fields(mutual_friends)&access_token="
                         + connectorProperties.getProperty("accessToken");
 
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
-        Assert.assertEquals(esbRestResponse.getBody().getJSONArray("data").length(), apiRestResponse.getBody()
-                .getJSONArray("data").length());
-
-    }
-
-    /**
-     * Positive test case for getMutualFriends method with mandatory parameters.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getMutualFriends} integration test with optional parameters.")
-    public void testGetMutualFriendsWithOptionalParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:getMutualFriends");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getMutualFriends_optional.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("userAId")
-                        + "/mutualfriends/" + connectorProperties.getProperty("userBId") + "?access_token="
-                        + connectorProperties.getProperty("accessToken") + "&fields=name,gender,link";
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-
-        JSONArray esbResponseArray = esbRestResponse.getBody().getJSONArray("data");
-        JSONArray apiResponseArray = apiRestResponse.getBody().getJSONArray("data");
-
-        if (esbResponseArray.length() != 0 && apiResponseArray.length() != 0) {
-            Assert.assertEquals(((JSONObject) esbResponseArray.get(0)).get("name"),
-                    ((JSONObject) apiResponseArray.get(0)).get("name"));
-            Assert.assertEquals(((JSONObject) esbResponseArray.get(0)).get("gender"),
-                    ((JSONObject) apiResponseArray.get(0)).get("gender"));
-            Assert.assertEquals(((JSONObject) esbResponseArray.get(0)).get("link"),
-                    ((JSONObject) apiResponseArray.get(0)).get("link"));
-        } else {
-            Assert.assertEquals(esbResponseArray.length(), apiResponseArray.length());
-        }
+        Assert.assertEquals(
+                esbRestResponse.getBody().getJSONObject("context").getJSONObject("mutual_friends").getJSONArray("data")
+                        .length(),
+                apiRestResponse.getBody().getJSONObject("context").getJSONObject("mutual_friends").getJSONArray("data")
+                        .length());
 
     }
 
     /**
      * Negative test case for getMutualFriends method .
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getMutualFriends} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getMutualFriends} integration test with negative case.")
     public void testGetMutualFriendsWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getMutualFriends");
@@ -1127,9 +1053,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         RestResponse< JSONObject > esbRestResponse =
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getMutualFriends_negative.txt");
 
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("userAId")
-                        + "/mutualfriends/Negative?access_token=" + connectorProperties.getProperty("accessToken");
+        String apiEndPoint = connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("apiVersion")
+                + "/Negative?fields=context.fields(mutual_friends)&access_token=" + connectorProperties
+                .getProperty("accessToken");
 
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
@@ -1140,34 +1066,18 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for publishNotification method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testgetAppAccessTokenWithMandatoryParameters"}, description = "facebook {publishNotification} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testgetAppAccessTokenWithMandatoryParameters" },
+          description = "facebook {publishNotification} integration test with mandatory parameters.")
     public void testPublishNotificationWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:publishNotification");
 
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_publishNotification_mandatory.txt");
+        RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap,
+                "esb_publishNotification_mandatory.txt");
 
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("userId")
-                        + "/notifications/?access_token=" + connectorProperties.getProperty("accessToken");
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        JSONArray jsonArray = apiRestResponse.getBody().getJSONArray("data");
-
-        boolean success = false;
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject element = (JSONObject) jsonArray.get(i);
-            JSONObject application = (JSONObject) element.get("application");
-
-            if (application.get("id").toString().equals(connectorProperties.getProperty("clientId"))
-                    && element.get("title").toString().contains(connectorProperties.getProperty("template"))) {
-                success = true;
-                break;
-            }
-
-        }
-
-        Assert.assertTrue(success);
+        Assert.assertTrue((Boolean) esbRestResponse.getBody().get("success"));
 
     }
 
@@ -1176,42 +1086,28 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testPublishNotificationWithMandatoryParameters"}, description = "facebook {publishNotification} integration test with optional parameters.")
-    public void testPublishNotificationWithOptionalParameters() throws IOException, JSONException, InterruptedException {
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testPublishNotificationWithMandatoryParameters" },
+          description = "facebook {publishNotification} integration test with optional parameters.")
+    public void testPublishNotificationWithOptionalParameters()
+            throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:publishNotification");
         Thread.sleep(timeOut);
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_publishNotification_optional.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("userId")
-                        + "/notifications/?access_token=" + connectorProperties.getProperty("accessToken");
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        JSONArray jsonArray = apiRestResponse.getBody().getJSONArray("data");
-
-        boolean success = false;
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject element = (JSONObject) jsonArray.get(i);
-            JSONObject application = (JSONObject) element.get("application");
-
-            if (application.get("id").toString().equals(connectorProperties.getProperty("clientId"))
-                    && element.get("title").toString().contains(connectorProperties.getProperty("template"))
-                    && element.get("link").toString().contains(connectorProperties.getProperty("href"))) {
-                success = true;
-                break;
-            }
-
-        }
-
-        Assert.assertTrue(success);
+        RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap,
+                "esb_publishNotification_optional.txt");
+        Assert.assertTrue((Boolean) esbRestResponse.getBody().get("success"));
 
     }
 
     /**
      * Negative test case for publishNotification method .
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testPublishNotificationWithOptionalParameters"}, description = "facebook {publishNotification} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testPublishNotificationWithOptionalParameters" },
+          description = "facebook {publishNotification} integration test with negative case.")
     public void testPublishNotificationWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:publishNotification");
@@ -1233,7 +1129,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for createAppAchievements method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testgetAppAccessTokenWithMandatoryParameters"}, description = "facebook {createAppAchievements} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testgetAppAccessTokenWithMandatoryParameters" },
+          description = "facebook {createAppAchievements} integration test with mandatory parameters.")
     public void testCreateAppAchievementsWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:createAppAchievements");
@@ -1244,7 +1143,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
 
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "DELETE", apiRequestHeadersMap);
 
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createAppAchievements_mandatory.txt");
+        RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap,
+                "esb_createAppAchievements_mandatory.txt");
+        Assert.assertTrue((Boolean) esbRestResponse.getBody().get("success"));
 
         apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("clientId")
@@ -1253,64 +1154,33 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
         JSONArray jsonArray = apiRestResponse.getBody().getJSONArray("data");
-
-        boolean success = false;
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject element = (JSONObject) jsonArray.get(i);
-            JSONObject application = (JSONObject) element.get("application");
-
-            if (application.get("id").toString().equals(connectorProperties.getProperty("clientId"))
-                    && element.get("url").toString().equals(connectorProperties.getProperty("achievementURL"))) {
-                success = true;
-                break;
-            }
-
-        }
-
-        Assert.assertTrue(success);
-
+        JSONObject element = (JSONObject) jsonArray.get(0);
+        Assert.assertEquals(element.get("type"), "game.achievement");
     }
 
     /**
      * Positive test case for createAppAchievements method with optional parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAppAchievementsWithMandatoryParameters"}, description = "facebook {createAppAchievements} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreateAppAchievementsWithMandatoryParameters" },
+          description = "facebook {createAppAchievements} integration test with optional parameters.")
     public void testCreateAppAchievementsWithOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:createAppAchievements");
 
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createAppAchievements_optional.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("clientId")
-                        + "/achievements?access_token=" + connectorProperties.getProperty("appAccessToken");
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-
-        JSONArray jsonArray = apiRestResponse.getBody().getJSONArray("data");
-
-        boolean success = false;
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject element = (JSONObject) jsonArray.get(i);
-            JSONObject application = (JSONObject) element.get("application");
-            JSONObject context = (JSONObject) element.get("context");
-            if (application.get("id").toString().equals(connectorProperties.getProperty("clientId"))
-                    && element.get("url").toString().contains(connectorProperties.getProperty("achievementURL"))
-                    && context.get("display_order").toString().equals(connectorProperties.getProperty("displayOrder"))) {
-                success = true;
-                break;
-            }
-
-        }
-
-        Assert.assertTrue(success);
-
+        RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap,
+                "esb_createAppAchievements_optional.txt");
+        Assert.assertTrue((Boolean) esbRestResponse.getBody().get("success"));
     }
 
     /**
      * Negative test case for createAppAchievements method .
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAppAchievementsWithMandatoryParameters"}, description = "facebook {createAppAchievements} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreateAppAchievementsWithMandatoryParameters" },
+          description = "facebook {createAppAchievements} integration test with negative case.")
     public void testCreateAppAchievementsWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:createAppAchievements");
@@ -1332,7 +1202,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for deleteAppAchievements method with mandatory parameters.
      */
-    @Test(priority = 3, groups = {"wso2.esb"}, description = "facebook {deleteAppAchievements} integration test with mandatory parameters.")
+    @Test(priority = 3,
+          groups = { "wso2.esb" },
+          dependsOnMethods = "testCreateAppAchievementsWithOptionalParameters",
+          description = "facebook {deleteAppAchievements} integration test with mandatory parameters.")
     public void testDeleteAppAchievementsWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:deleteAppAchievements");
@@ -1353,7 +1226,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for deleteAppAchievements method .
      */
-    @Test(priority = 3, groups = {"wso2.esb"}, description = "facebook {deleteAppAchievements} integration test with negative case.")
+    @Test(priority = 3,
+          groups = { "wso2.esb" },
+          description = "facebook {deleteAppAchievements} integration test with negative case.")
     public void testDeleteAppAchievementsWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:deleteAppAchievements");
@@ -1373,216 +1248,12 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     }
 
     /**
-     * Positive test case for createUserAchievement method with mandatory parameters.
-     *
-     * @throws InterruptedException
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAppAchievementsWithMandatoryParameters"}, description = "facebook {createUserAchievement} integration test with mandatory parameters.")
-    public void testCreateUserAchievementWithMandatoryParameters() throws IOException, JSONException,
-            InterruptedException {
-
-        esbRequestHeadersMap.put("Action", "urn:createUserAchievement");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createUserAchievements_mandatory.txt");
-
-        String achievementId = esbRestResponse.getBody().get("id").toString();
-        Thread.sleep(timeOut);
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + achievementId + "?access_token="
-                        + connectorProperties.getProperty("accessToken");
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-
-        Assert.assertTrue(apiRestResponse.getBody().has("id"));
-
-    }
-
-    /**
-     * Negative test case for createUserAchievement method .
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createUserAchievement} integration test with negative case.")
-    public void testCreateUserAchievementWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createUserAchievement");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createUserAchievements_negative.txt");
-
-        String apiEndPoint = "https://graph.facebook.com/me/achievements";
-
-        RestResponse< JSONObject > apiRestResponse =
-                sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap,
-                        "api_createUserAchievements_negative.txt");
-
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-
-    }
-
-    /**
-     * Positive test case for deleteUserAchievement method with mandatory parameters.
-     *
-     * @throws InterruptedException
-     */
-    @Test(priority = 2, groups = {"wso2.esb"}, description = "facebook {deleteUserAchievement} integration test with mandatory parameters.")
-    public void testDeleteUserAchievementWithMandatoryParameters() throws IOException, JSONException,
-            InterruptedException {
-
-        esbRequestHeadersMap.put("Action", "urn:deleteUserAchievement");
-
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deleteUserAchievement_mandatory.txt");
-
-        Thread.sleep(timeOut);
-        String apiEndPoint =
-                "https://graph.facebook.com/me/achievements?access_token="
-                        + connectorProperties.getProperty("accessToken") + "&achievement="
-                        + connectorProperties.getProperty("achievementURL");
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "DELETE", apiRequestHeadersMap);
-
-        Assert.assertTrue(apiRestResponse.getBody().has("error"));
-
-    }
-
-    /**
-     * Negative test case for deleteUserAchievement method .
-     */
-    @Test(priority = 2, groups = {"wso2.esb"}, description = "facebook {createUserAchievement} integration test with negative case.")
-    public void testDeleteUserAchievementWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deleteUserAchievement");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deleteUserAchievement_negative.txt");
-
-        String apiEndPoint =
-                "https://graph.facebook.com/me/achievements?access_token="
-                        + connectorProperties.getProperty("accessToken") + "&achievement=www.negativeachievement.com/";
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "DELETE", apiRequestHeadersMap);
-
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-
-    }
-
-    /**
-     * Positive test case for createAppSubscription method with mandatory parameters.
-     *
-     * @throws InterruptedException
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testgetAppAccessTokenWithMandatoryParameters"}, description = "facebook {createAppSubscription} integration test with mandatory parameters.")
-    public void testCreateAppSubscriptionWithMandatoryParameters() throws IOException, JSONException,
-            InterruptedException {
-
-        esbRequestHeadersMap.put("Action", "urn:createAppSubscription");
-
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createAppSubscription_mandatory.txt");
-
-        Thread.sleep(timeOut);
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("appId")
-                        + "/subscriptions?access_token=" + connectorProperties.getProperty("appAccessToken");
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-
-        JSONArray jsonArray = apiRestResponse.getBody().getJSONArray("data");
-        boolean succsess = false;
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject element = jsonArray.getJSONObject(i);
-            if (element.getString("callback_url").equals(connectorProperties.getProperty("callbackURL"))
-                    && element.getString("object").equals(connectorProperties.getProperty("subscriptionObject"))) {
-                succsess = true;
-                break;
-
-            }
-        }
-        Assert.assertTrue(succsess);
-
-    }
-
-    /**
-     * Negative test case for createAppSubscription method .
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testgetAppAccessTokenWithMandatoryParameters"}, description = "facebook {createAppSubscription} integration test with negative case.")
-    public void testCreateAppSubscriptionWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createAppSubscription");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createAppSubscription_negative.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("appId") + "/subscriptions";
-
-        RestResponse< JSONObject > apiRestResponse =
-                sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_createAppSubscription_negative.txt");
-
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-
-    }
-
-    /**
-     * Positive test case for deleteAppSubscription method with mandatory parameters.
-     *
-     * @throws InterruptedException
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAppSubscriptionWithMandatoryParameters"}, description = "facebook {deleteAppSubscription} integration test with mandatory parameters.")
-    public void testDeleteAppSubscriptionWithMandatoryParameters() throws IOException, JSONException,
-            InterruptedException {
-
-        esbRequestHeadersMap.put("Action", "urn:deleteAppSubscription");
-
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deleteAppSubscription_mandatory.txt");
-
-        Thread.sleep(timeOut);
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("appId")
-                        + "/subscriptions?access_token=" + connectorProperties.getProperty("appAccessToken");
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-
-        JSONArray jsonArray = apiRestResponse.getBody().getJSONArray("data");
-        boolean isDeleted = true;
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject element = jsonArray.getJSONObject(i);
-            if (element.getString("callback_url").equals(connectorProperties.getProperty("callbackURL"))
-                    && element.getString("object").equals(connectorProperties.getProperty("subscriptionObject"))) {
-                isDeleted = false;
-                break;
-
-            }
-        }
-        Assert.assertTrue(isDeleted);
-
-    }
-
-    /**
-     * Negative test case for deleteAppSubscription method .
-     */
-    @Test(priority = 2, groups = {"wso2.esb"}, dependsOnMethods = {"testgetAppAccessTokenWithMandatoryParameters"}, description = "facebook {deleteAppSubscription} integration test with negative case.")
-    public void testDeleteAppSubscriptionWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deleteAppSubscription");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deleteAppSubscription_negative.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("appId")
-                        + "/subscriptions?object=negative&access_token="
-                        + connectorProperties.getProperty("appAccessToken");
-        ;
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "DELETE", apiRequestHeadersMap);
-
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-
-    }
-
-    /**
      * Positive test case for getAppDetails method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testgetAppAccessTokenWithMandatoryParameters"}, description = "facebook {getAppDetails} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testgetAppAccessTokenWithMandatoryParameters" },
+          description = "facebook {getAppDetails} integration test with mandatory parameters.")
     public void testGetAppDetailsWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getAppDetails");
@@ -1595,7 +1266,7 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         RestResponse< JSONObject > esbRestResponse =
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getAppDetails_mandatory.txt");
 
-        Assert.assertEquals(esbRestResponse.getBody().get("category"), apiRestResponse.getBody().get("category"));
+        Assert.assertEquals(esbRestResponse.getBody().get("link"), apiRestResponse.getBody().get("link"));
         Assert.assertEquals(esbRestResponse.getBody().get("name"), apiRestResponse.getBody().get("name"));
         Assert.assertEquals(esbRestResponse.getBody().get("id"), apiRestResponse.getBody().get("id"));
 
@@ -1604,7 +1275,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for getEventDetails method with optional parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testgetAppAccessTokenWithMandatoryParameters"}, description = "facebook {getAppDetails} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testgetAppAccessTokenWithMandatoryParameters" },
+          description = "facebook {getAppDetails} integration test with optional parameters.")
     public void testGetAppDetailsWithOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getAppDetails");
@@ -1625,7 +1299,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for getAppDetails method.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testgetAppAccessTokenWithMandatoryParameters"}, description = "facebook {getAppDetails} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testgetAppAccessTokenWithMandatoryParameters" },
+          description = "facebook {getAppDetails} integration test with negative case.")
     public void testGetAppDetailsWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getAppDetails");
@@ -1644,7 +1321,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for banAppUser method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testgetAppAccessTokenWithMandatoryParameters"}, description = "facebook {banAppUser} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testgetAppAccessTokenWithMandatoryParameters" },
+          description = "facebook {banAppUser} integration test with optional parameters.")
     public void testBanAppUserWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:banAppUser");
@@ -1655,15 +1335,18 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_banAppUser_mandatory.txt");
         RestResponse< JSONObject > apiRestResponse =
                 sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_banAppUser_mandatory.txt");
-        Assert.assertEquals(esbRestResponse.getBody().get("output").toString(), apiRestResponse.getBody().get("output")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().get("success").toString(),
+                apiRestResponse.getBody().get("success").toString());
 
     }
 
     /**
      * Negative test case for banAppUser method with optional parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testgetAppAccessTokenWithMandatoryParameters"}, description = "facebook {banAppUser} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testgetAppAccessTokenWithMandatoryParameters" },
+          description = "facebook {banAppUser} integration test with negative case.")
     public void testBanAppUserWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:banAppUser");
@@ -1680,7 +1363,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for isAppUserBanned method with mandatory parameters.
      */
-    @Test(priority = 1, dependsOnMethods = {"testBanAppUserWithMandatoryParameters"}, groups = {"wso2.esb"}, description = "facebook {isAppUserBanned} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          dependsOnMethods = { "testBanAppUserWithMandatoryParameters" },
+          groups = { "wso2.esb" },
+          description = "facebook {isAppUserBanned} integration test with mandatory parameters.")
     public void testIsAppUserBannedWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:isAppUserBanned");
@@ -1701,7 +1387,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for isAppUserBanned method.
      */
-    @Test(priority = 1, dependsOnMethods = {"testBanAppUserWithMandatoryParameters"}, groups = {"wso2.esb"}, description = "facebook {isAppUserBanned} integration test with negative case.")
+    @Test(priority = 1,
+          dependsOnMethods = { "testBanAppUserWithMandatoryParameters" },
+          groups = { "wso2.esb" },
+          description = "facebook {isAppUserBanned} integration test with negative case.")
     public void testIsAppUserBannedWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:isAppUserBanned");
@@ -1719,7 +1408,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for unbanAppUser method with mandatory parameters.
      */
-    @Test(priority = 1, dependsOnMethods = {"testBanAppUserWithMandatoryParameters"}, groups = {"wso2.esb"}, description = "facebook {unbanAppUser} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          dependsOnMethods = { "testBanAppUserWithMandatoryParameters" },
+          groups = { "wso2.esb" },
+          description = "facebook {unbanAppUser} integration test with mandatory parameters.")
     public void testUnbanAppUserWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:unbanAppUser");
@@ -1740,7 +1432,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for unbanAppUser method.
      */
-    @Test(priority = 1, dependsOnMethods = {"testBanAppUserWithMandatoryParameters"}, groups = {"wso2.esb"}, description = "facebook {unbanAppUser} integration test with negative case.")
+    @Test(priority = 1,
+          dependsOnMethods = { "testBanAppUserWithMandatoryParameters" },
+          groups = { "wso2.esb" },
+          description = "facebook {unbanAppUser} integration test with negative case.")
     public void testUnbanAppUserWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:unbanAppUser");
@@ -1756,99 +1451,11 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     }
 
     /**
-     * Positive test case for createAppUserGroup method with mandatory parameters.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testgetAppAccessTokenWithMandatoryParameters"}, description = "facebook {createAppUserGroup} integration test with optional parameters.")
-    public void testCreateAppUserGroupWithMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createAppUserGroup");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createAppUserGroup_mandatory.txt");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + esbRestResponse.getBody().get("id").toString()
-                        + "?access_token=" + connectorProperties.getProperty("appAccessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        connectorProperties.put("groupId", esbRestResponse.getBody().get("id"));
-        Assert.assertEquals(esbRestResponse.getBody().get("id"), apiRestResponse.getBody().get("id"));
-        Assert.assertEquals(apiRestResponse.getBody().get("name").toString(),
-                connectorProperties.getProperty("groupName"));
-
-    }
-
-    /**
-     * Positive test case for createAppUserGroup method with optional parameters.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testgetAppAccessTokenWithMandatoryParameters"}, description = "facebook {createAppUserGroup} integration test with optional parameters.")
-    public void testCreateAppUserGroupWithOptionalParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createAppUserGroup");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createAppUserGroup_optional.txt");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + esbRestResponse.getBody().get("id").toString()
-                        + "?access_token=" + connectorProperties.getProperty("appAccessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("id"), apiRestResponse.getBody().get("id"));
-        Assert.assertEquals(apiRestResponse.getBody().get("name").toString(),
-                connectorProperties.getProperty("groupName"));
-        Assert.assertEquals(apiRestResponse.getBody().get("description").toString(),
-                connectorProperties.getProperty("description"));
-
-    }
-
-    /**
-     * Negative test case for createAppUserGroup method.
-     */
-    @Test(priority = 1, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, groups = {"wso2.esb"}, description = "facebook {createAppUserGroup} integration test with negative case.")
-    public void testCreateAppUserGroupWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createAppUserGroup");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createAppUserGroup_negative.txt");
-        String apiEndPoint = "https://graph.facebook.com/invalid/groups";
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-    }
-
-    /**
-     * Positive test case for deleteAppUserGroup method with mandatory parameters.
-     */
-    @Test(priority = 3, groups = {"wso2.esb"}, description = "facebook {deleteAppUserGroup} integration test with mandatory parameters.")
-    public void testDeleteAppUserGroupWithMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deleteAppUserGroup");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("groupId")
-                        + "?access_token=" + connectorProperties.getProperty("appAccessToken");
-
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deleteAppUserGroup_mandatory.txt");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().has("error"));
-
-    }
-
-    /**
-     * Negative test case for deleteAppUserGroup method.
-     */
-    @Test(priority = 1, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, groups = {"wso2.esb"}, description = "facebook {deleteAppUserGroup} integration test with negative case.")
-    public void testDeleteAppUserGroupWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deleteAppUserGroup");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deleteAppUserGroup_negative.txt");
-        String apiEndPoint = "https://graph.facebook.com/invalid/groups";
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-    }
-
-    /**
      * Positive test case for getPageDetails method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getPageDetails} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getPageDetails} integration test with mandatory parameters.")
     public void testGetPageDetailsWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getPageDetails");
@@ -1860,7 +1467,6 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getPageDetails_mandatory.txt");
 
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("category"), apiRestResponse.getBody().get("category"));
         Assert.assertEquals(esbRestResponse.getBody().get("name"), apiRestResponse.getBody().get("name"));
         Assert.assertEquals(esbRestResponse.getBody().get("id"), apiRestResponse.getBody().get("id"));
 
@@ -1869,7 +1475,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for getPageDetails method with optional parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getPageDetails} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getPageDetails} integration test with optional parameters.")
     public void testGetPageDetailsWithOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getPageDetails");
@@ -1888,7 +1496,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for getPageDetails method.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getPageDetails} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getPageDetails} integration test with negative case.")
     public void testGetPageDetailsWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getPageDetails");
@@ -1907,7 +1517,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createPageAlbum} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {createPageAlbum} integration test with optional parameters.")
     public void testCreatePageAlbumWithMandatoryParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:createPageAlbum");
@@ -1930,7 +1542,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createPageAlbum} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {createPageAlbum} integration test with optional parameters.")
     public void testCreatePageAlbumWithOptionalParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:createPageAlbum");
@@ -1945,14 +1559,14 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         Assert.assertEquals(esbRestResponse.getBody().get("id"), apiRestResponse.getBody().get("id"));
         Assert.assertEquals(apiRestResponse.getBody().get("name").toString(),
                 connectorProperties.getProperty("albumName"));
-        Assert.assertEquals(apiRestResponse.getBody().get("description").toString(),
-                connectorProperties.getProperty("message"));
     }
 
     /**
      * Negative test case for createPageAlbum method.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createPageAlbum} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {createPageAlbum} integration test with negative case.")
     public void testCreatePageAlbumWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:createPageAlbum");
@@ -1971,7 +1585,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {blockUserFromPage} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {blockUserFromPage} integration test with optional parameters.")
     public void testBlockUserFromPageWithMandatoryParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:blockUserFromPage");
@@ -1985,14 +1601,15 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
         JSONObject response = (JSONObject) apiRestResponse.getBody().getJSONArray("data").get(0);
-        Assert.assertEquals(response.get("id").toString(), connectorProperties.getProperty("pageUsreId"));
-
+        Assert.assertEquals(response.get("name").toString(), connectorProperties.getProperty("blockedUserName"));
     }
 
     /**
      * Negative test case for blockUserFromPage method with optional parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {blockUserFromPage} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {blockUserFromPage} integration test with negative case.")
     public void testBlockUserFromPageWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:blockUserFromPage");
@@ -2009,7 +1626,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for unblockUserFromPage method with mandatory parameters.
      */
-    @Test(priority = 1, dependsOnMethods = {"testBlockUserFromPageWithMandatoryParameters"}, groups = {"wso2.esb"}, description = "facebook {unblockUserFromPage} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          dependsOnMethods = { "testBlockUserFromPageWithMandatoryParameters" },
+          groups = { "wso2.esb" },
+          description = "facebook {unblockUserFromPage} integration test with mandatory parameters.")
     public void testUnblockUserFromPageWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:unblockUserFromPage");
@@ -2030,7 +1650,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for unblockUserFromPage method.
      */
-    @Test(priority = 1, dependsOnMethods = {"testBlockUserFromPageWithMandatoryParameters"}, groups = {"wso2.esb"}, description = "facebook {unblockUserFromPage} integration test with negative case.")
+    @Test(priority = 1,
+          dependsOnMethods = { "testBlockUserFromPageWithMandatoryParameters" },
+          groups = { "wso2.esb" },
+          description = "facebook {unblockUserFromPage} integration test with negative case.")
     public void testUnblockUserFromPageWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:unblockUserFromPage");
@@ -2046,71 +1669,13 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     }
 
     /**
-     * Positive test case for createPageEvent method with mandatory parameters.
-     *
-     * @throws InterruptedException
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createPageEvent} integration test with optional parameters.")
-    public void testCreatePageEventWithMandatoryParameters() throws IOException, JSONException, InterruptedException {
-
-        esbRequestHeadersMap.put("Action", "urn:createPageEvent");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createPageEvent_mandatory.txt");
-        String eventId = esbRestResponse.getBody().get("id").toString();
-        connectorProperties.put("eventId", eventId);
-        Thread.sleep(timeOut);
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + eventId + "?access_token="
-                        + connectorProperties.getProperty("pageAccessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("id"), apiRestResponse.getBody().get("id"));
-        Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("eventName"));
-
-    }
-
-    /**
-     * Positive test case for createPageEvent method with optional parameters.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreatePageEventWithMandatoryParameters"}, description = "facebook {createPageEvent} integration test with optional parameters.")
-    public void testCreatePageEventWithOptionalParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createPageEvent");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createPageEvent_optional.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + esbRestResponse.getBody().get("id").toString()
-                        + "?access_token=" + connectorProperties.getProperty("pageAccessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("id"), apiRestResponse.getBody().get("id"));
-        Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("eventName"));
-        Assert.assertEquals(apiRestResponse.getBody().get("description"),
-                connectorProperties.getProperty("description"));
-    }
-
-    /**
-     * Negative test case for createPageEvent method.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createPageEvent} integration test with negative case.")
-    public void testCreatePageEventWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createPageEvent");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createPageEvent_negative.txt");
-        String apiEndPoint = "https://graph.facebook.com/invalid/events";
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-    }
-
-    /**
      * Positive test case for publishPagePost method with mandatory parameters.
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {publishPagePost} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {publishPagePost} integration test with optional parameters.")
     public void testPublishPagePostWithMandatoryParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:publishPagePost");
@@ -2118,6 +1683,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         RestResponse< JSONObject > esbRestResponse =
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_publishPagePost_mandatory.txt");
         Thread.sleep(timeOut);
+
+        String pagePostId = esbRestResponse.getBody().get("id").toString();
+        connectorProperties.put("pagePostId", pagePostId);
 
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + esbRestResponse.getBody().get("id").toString()
@@ -2133,7 +1701,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for publishPagePost method with optional parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {publishPagePost} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {publishPagePost} integration test with optional parameters.")
     public void testPublishPagePostWithOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:publishPagePost");
@@ -2143,18 +1713,19 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
 
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + esbRestResponse.getBody().get("id").toString()
-                        + "?access_token=" + connectorProperties.getProperty("pageAccessToken");
+                        + "?fields=message,link&access_token=" + connectorProperties.getProperty("pageAccessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getBody().get("id"), apiRestResponse.getBody().get("id"));
         Assert.assertEquals(apiRestResponse.getBody().get("message"), connectorProperties.getProperty("groupName"));
-        Assert.assertEquals(apiRestResponse.getBody().get("description"),
-                connectorProperties.getProperty("description"));
+        Assert.assertEquals(apiRestResponse.getBody().get("link"), "https://www.google.lk/");
     }
 
     /**
      * Negative test case for publishPagePost method.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {publishPagePost} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {publishPagePost} integration test with negative case.")
     public void testPublishPagePostWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:publishPagePost");
@@ -2171,13 +1742,15 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {updatePageDetails} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {updatePageDetails} integration test with optional parameters.")
     public void testUpdatePageDetailsWithOptionalParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:updatePageDetails");
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("pageId")
-                        + "?access_token=" + connectorProperties.getProperty("pageAccessToken");
+                        + "?fields=about&access_token=" + connectorProperties.getProperty("pageAccessToken");
         sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_updatePageDetails_optional.txt");
 
         Thread.sleep(timeOut);
@@ -2190,7 +1763,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for updatePageDetails method.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {updatePageDetails} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {updatePageDetails} integration test with negative case.")
     public void testUpdatePageDetailsWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:updatePageDetails");
@@ -2205,7 +1780,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for updateAppDetails method with optional parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testgetAppAccessTokenWithMandatoryParameters"}, description = "facebook {updateAppDetails} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testgetAppAccessTokenWithMandatoryParameters" },
+          description = "facebook {updateAppDetails} integration test with optional parameters.")
     public void testUpdateAppDetailsWithOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:updateAppDetails");
@@ -2222,7 +1800,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for updateAppDetails method.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testgetAppAccessTokenWithMandatoryParameters"}, description = "facebook {updateAppDetails} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testgetAppAccessTokenWithMandatoryParameters" },
+          description = "facebook {updateAppDetails} integration test with negative case.")
     public void testUpdateAppDetailsWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:updateAppDetails");
@@ -2236,82 +1817,11 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     }
 
     /**
-     * Positive test case for createPageNote method with mandatory parameters.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createPageNote} integration test with optional parameters.")
-    public void testCreatePageNoteWithMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createPageNote");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createPageNote_mandatory.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + esbRestResponse.getBody().get("id").toString()
-                        + "?access_token=" + connectorProperties.getProperty("pageAccessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("id"), apiRestResponse.getBody().get("id"));
-        Assert.assertTrue(apiRestResponse.getBody().get("message").toString()
-                .contains(connectorProperties.getProperty("description")));
-    }
-
-    /**
-     * Negative test case for createPageNote method.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createPageNote} integration test with negative case.")
-    public void testCreatePageNoteWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createPageNote");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createPageNote_negative.txt");
-        String apiEndPoint =
-                "https://graph.facebook.com/invalid/notes?access_token="
-                        + connectorProperties.getProperty("pageAccessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-    }
-
-    /**
-     * Positive test case for updatePageSettings method with mandatory parameters.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {updatePageSettings} integration test with optional parameters.")
-    public void testUpdatePageSettingsWithMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:updatePageSettings");
-
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_updatePageSettings_mandatory.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("pageId")
-                        + "/settings?access_token=" + connectorProperties.getProperty("pageAccessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().getJSONArray("data").get(0).toString()
-                .contains(connectorProperties.getProperty("value")));
-
-    }
-
-    /**
-     * Negative test case for updatePageSettings method.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {updatePageSettings} integration test with negative case.")
-    public void testUpdatePageSettingsWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:updatePageSettings");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_updatePageSettings_negative.txt");
-        String apiEndPoint =
-                "https://graph.facebook.com/invalid/settings?access_token="
-                        + connectorProperties.getProperty("pageAccessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-    }
-
-    /**
      * Positive test case for replyToConversation method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {replyToConversation} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {replyToConversation} integration test with optional parameters.")
     public void testReplyToConversationWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:replyToConversation");
@@ -2321,15 +1831,17 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
 
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + esbRestResponse.getBody().get("id").toString()
-                        + "?access_token=" + connectorProperties.getProperty("pageAccessToken");
+                        + "?access_token=" + connectorProperties.getProperty("pageAccessToken") + "&fields=message";
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().toString().contains(connectorProperties.getProperty("description")));
+        Assert.assertEquals(apiRestResponse.getBody().get("message"), connectorProperties.getProperty("description"));
     }
 
     /**
      * Negative test case for replyToConversation method.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {replyToConversation} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {replyToConversation} integration test with negative case.")
     public void testReplyToConversationWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:replyToConversation");
@@ -2343,149 +1855,12 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     }
 
     /**
-     * Positive test case for sendAppRequest method with mandatory parameters.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {sendAppRequest} integration test with optional parameters.")
-    public void testSendAppRequestWithMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:sendAppRequest");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_sendAppRequest_mandatory.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + esbRestResponse.getBody().get("request").toString()
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().toString().contains(connectorProperties.getProperty("message")));
-    }
-
-    /**
-     * Positive test case for sendAppRequest method with optional parameters.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {sendAppRequest} integration test with optional parameters.")
-    public void testSendAppRequestWithOptionalParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:sendAppRequest");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_sendAppRequest_optional.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + esbRestResponse.getBody().get("request").toString()
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().toString().contains(connectorProperties.getProperty("message")));
-        Assert.assertTrue(apiRestResponse.getBody().toString().contains(connectorProperties.getProperty("description")));
-
-    }
-
-    /**
-     * Negative test case for sendAppRequest method.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {sendAppRequest} integration test with negative case.")
-    public void testSendAppRequestWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:sendAppRequest");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_sendAppRequest_negative.txt");
-        String apiEndPoint = "https://graph.facebook.com/me/apprequests?access_token=invalid";
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-    }
-
-    /**
-     * Positive test case for inviteMemberToGroup method with mandatory parameters.
-     */
-    @Test(priority = 1, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, groups = {"wso2.esb"}, description = "facebook {inviteMemberToGroup} integration test with optional parameters.")
-    public void testInviteMemberToGroupWithMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:inviteMemberToGroup");
-
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_inviteMemberToGroup_mandatory.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("groupId")
-                        + "/members?access_token=" + connectorProperties.getProperty("appAccessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().toString().contains(connectorProperties.getProperty("groupMember")));
-    }
-
-    /**
-     * Negative test case for inviteMemberToGroup method.
-     */
-    @Test(priority = 1, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, groups = {"wso2.esb"}, description = "facebook {inviteMemberToGroup} integration test with negative case.")
-    public void testInviteMemberToGroupWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:inviteMemberToGroup");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_inviteMemberToGroup_negative.txt");
-        String apiEndPoint =
-                "https://graph.facebook.com/invalid/members?access_token="
-                        + connectorProperties.getProperty("appAccessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-    }
-
-    /**
-     * Positive test case for removeMemberFromGroup method with mandatory parameters.
-     */
-    @Test(priority = 1, dependsOnMethods = {"testInviteMemberToGroupWithMandatoryParameters"}, groups = {"wso2.esb"}, description = "facebook {removeMemberFromGroup} integration test with optional parameters.")
-    public void testRemoveMemberFromGroupWithMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:removeMemberFromGroup");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("groupId")
-                        + "/members?access_token=" + connectorProperties.getProperty("appAccessToken");
-        RestResponse< JSONObject > apiRestResponse1 = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_removeMemberFromGroup_mandatory.txt");
-        RestResponse< JSONObject > apiRestResponse2 = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertNotEquals(apiRestResponse1.getBody().getJSONArray("data"), apiRestResponse2.getBody()
-                .getJSONArray("data"));
-    }
-
-    /**
-     * Negative test case for removeMemberFromGroup method.
-     */
-    @Test(priority = 1, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, groups = {"wso2.esb"}, description = "facebook {removeMemberFromGroup} integration test with negative case.")
-    public void testRemoveMemberFromGroupWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:removeMemberFromGroup");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_removeMemberFromGroup_negative.txt");
-        String apiEndPoint =
-                "https://graph.facebook.com/invalid/members?access_token="
-                        + connectorProperties.getProperty("appAccessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-    }
-
-    /**
-     * Positive test case for createAppUserRole method with mandatory parameters.
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, description = "facebook {createAppUserRole} integration test with optional parameters.")
-    public void testCreateAppUserRoleWithMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createAppUserRole");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createAppUserRole_mandatory.txt");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("appId")
-                        + "/roles?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse =
-                sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_createAppUserRole_mandatory.txt");
-        Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
-    }
-
-    /**
      * Negative test case for createAppUserRole method.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, description = "facebook {createAppUserRole} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testgetAppAccessTokenWithMandatoryParameters" },
+          description = "facebook {createAppUserRole} integration test with negative case.")
     public void testCreateAppUserRoleWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:createAppUserRole");
@@ -2502,7 +1877,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for deleteAppUserRole method with mandatory parameters.
      */
-    @Test(priority = 1, dependsOnMethods = {"testgetAppAccessTokenWithMandatoryParameters"}, groups = {"wso2.esb"}, description = "facebook {deleteAppUserRole} integration test with optional parameters.")
+    @Test(priority = 1,
+          dependsOnMethods = { "testgetAppAccessTokenWithMandatoryParameters" },
+          groups = { "wso2.esb" },
+          description = "facebook {deleteAppUserRole} integration test with optional parameters.")
     public void testDeleteAppUserRoleWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:deleteAppUserRole");
@@ -2522,7 +1900,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Negative test case for deleteAppUserRole method.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testgetAppAccessTokenWithMandatoryParameters"}, description = "facebook {deleteAppUserRole} integration test with negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testgetAppAccessTokenWithMandatoryParameters" },
+          description = "facebook {deleteAppUserRole} integration test with negative case.")
     public void testDeleteAppUserRoleWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:deleteAppUserRole");
@@ -2536,41 +1917,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
     }
 
-    /**
-     * Positive test case for setGroupCoverPhoto with mandatory parameters
-     */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, description = "facebook {setGroupCoverPhoto} integration test with mandatory parameters.")
-    public void testSetGroupCoverPhotoMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:setGroupCoverPhoto");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_setGroupCoverPhoto_mandatory.txt");
-        Assert.assertTrue(esbRestResponse.getBody().toString().contains("true"));
-    }
-
-    /**
-     * Negative test case for setGroupCoverPhoto
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {setGroupCoverPhoto} integration test negative case.")
-    public void testSetGroupCoverPhotoNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:setGroupCoverPhoto");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_setGroupCoverPhoto_negative.txt");
-        String apiEndPoint = "https://graph.facebook.com/invalid";
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-    }
-
-    /**
-     * Positive test case for createPageMilestone method with mandatory parameters.
-     *
-     * @throws InterruptedException
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createPageMilestone} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {createPageMilestone} integration test with mandatory parameters.")
     public void testCreatePageMilestoneMandatoryParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:publishPageMilestone");
@@ -2589,25 +1939,35 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Negative test case for createPageMilestone.
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreatePageMilestoneMandatoryParameters"}, description = "facebook {createPageMilestone} integration test negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreatePageMilestoneMandatoryParameters" },
+          description = "facebook {createPageMilestone} integration test negative case.")
     public void testCreatePageMilestoneNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:publishPageMilestone");
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("pageId") + "/milestones";
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createPageMilestone_negative.txt");
-        RestResponse< JSONObject > apiRestResponse =
-                sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_createPageMilestone_negative.txt");
-        Assert.assertEquals(esbRestResponse.getBody().get("error").toString(), apiRestResponse.getBody().get("error")
-                .toString());
+        RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap,
+                "esb_createPageMilestone_negative.txt");
+        RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap,
+                "api_createPageMilestone_negative.txt");
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("message").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("code").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("code").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("type").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("type").toString());
     }
 
     /**
      * Positive test case for getPageMilestoneDetails method with mandatory parameters.
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreatePageMilestoneNegativeCase"}, description = "facebook {getPageMilestoneDetails} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreatePageMilestoneNegativeCase" },
+          description = "facebook {getPageMilestoneDetails} integration test with mandatory parameters.")
     public void testGetPageMilestoneDetailsMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getPageMilestoneDetails");
@@ -2625,7 +1985,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Positive test case for getPageMilestoneDetails method with optional parameters.
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetPageMilestoneDetailsMandatoryParameters"}, description = "facebook {getPageMilestoneDetails} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetPageMilestoneDetailsMandatoryParameters" },
+          description = "facebook {getPageMilestoneDetails} integration test with optional parameters.")
     public void testGetPageMilestoneDetailsOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getPageMilestoneDetails");
@@ -2633,7 +1996,7 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getPageMilestoneDetails_optional.txt");
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("pageId")
-                        + "/milestones?fields=id&access_token=" + connectorProperties.getProperty("pageAccessToken");
+                        + "/milestones?fields=data&access_token=" + connectorProperties.getProperty("pageAccessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getBody().get("data").toString(), apiRestResponse.getBody().get("data")
                 .toString());
@@ -2643,7 +2006,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Negative test case for getPageMilestoneDetails method
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetPageMilestoneDetailsOptionalParameters"}, description = "facebook {getPageMilestoneDetails} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetPageMilestoneDetailsOptionalParameters" },
+          description = "facebook {getPageMilestoneDetails} integration test with optional parameters.")
     public void testGetPageMilestoneDetailsNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getPageMilestoneDetails");
@@ -2653,24 +2019,32 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 "https://graph.facebook.com/invalid12342/milestones?fields=id&access_token="
                         + connectorProperties.getProperty("pageAccessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("error").toString(), apiRestResponse.getBody().get("error")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("message").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("code").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("code").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("type").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("type").toString());
     }
 
     /**
      * Positive test case for updatePageMilestone method with optional parameters.
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetPageMilestoneDetailsNegativeCase"}, description = "facebook {updatePageMilestone} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetPageMilestoneDetailsNegativeCase" },
+          description = "facebook {updatePageMilestone} integration test with optional parameters.")
     public void testUpdatePageMilestoneOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:updatePageMilestone");
-        String apiEndPoint = connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("milestoneId");
+        String apiEndPoint = connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("milestoneId")
+                + "?fields=title&access_token=" + connectorProperties.getProperty("pageAccessToken");
         RestResponse< JSONObject > esbRestResponse =
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_updatePageMilestone_optional.txt");
         RestResponse< JSONObject > apiRestResponse =
-                sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_updatePageMilestone_optional.txt");
-        Assert.assertEquals(esbRestResponse.getBody().get("output").toString(), apiRestResponse.getBody().get("output")
+                sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+        Assert.assertEquals(connectorProperties.getProperty("title"), apiRestResponse.getBody().get("title")
                 .toString());
     }
 
@@ -2678,7 +2052,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Negative test case for updatePageMilestone method
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testUpdatePageMilestoneOptionalParameters"}, description = "facebook {updatePageMilestone} integration test negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testUpdatePageMilestoneOptionalParameters" },
+          description = "facebook {updatePageMilestone} integration test negative case.")
     public void testUpdatePageMilestoneNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:updatePageMilestone");
@@ -2687,15 +2064,22 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_updatePageMilestone_negative.txt");
         RestResponse< JSONObject > apiRestResponse =
                 sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_updatePageMilestone_negative.txt");
-        Assert.assertEquals(esbRestResponse.getBody().get("error").toString(), apiRestResponse.getBody().get("error")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("message").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("code").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("code").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("type").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("type").toString());
     }
 
     /**
      * Negative test case for deletePageMilestone method
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testUpdatePageMilestoneNegativeCase"}, description = "facebook {deletePageMilestone} integration test negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testUpdatePageMilestoneNegativeCase" },
+          description = "facebook {deletePageMilestone} integration test negative case.")
     public void testDeletePageMilestoneNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:deletePageMilestone");
@@ -2712,7 +2096,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Positive test case for deletePageMilestone method with mandatory parameters
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testDeletePageMilestoneNegativeCase"}, description = "facebook {deletePageMilestone} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testDeletePageMilestoneNegativeCase" },
+          description = "facebook {deletePageMilestone} integration test with optional parameters.")
     public void testDeletePageMilestoneMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:deletePageMilestone");
@@ -2726,140 +2113,22 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     }
 
     /**
-     * Positive test case for createFriendList method with mandatory parameters.
-     *
-     * @throws InterruptedException
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createFriendList} integration test with mandatory parameters.")
-    public void testCreateFriendlistMandatoryParameters() throws IOException, JSONException, InterruptedException {
-
-        esbRequestHeadersMap.put("Action", "urn:createFriendList");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createFriendlist_mandatory.txt");
-
-        connectorProperties.put("friendlistId", esbRestResponse.getBody().get("id").toString());
-        Thread.sleep(timeOut);
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("friendlistId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().has("id"));
-    }
-
-    /**
-     * Negative test case for createFriendList method parameters.
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateFriendlistMandatoryParameters"}, description = "facebook {createFriendList} integration test negative case.")
-    public void testCreateFriendlistNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createFriendList");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createFriendlist_negative.txt");
-        String apiEndPoint = "https://graph.facebook.com/me/friendlists";
-        RestResponse< JSONObject > apiRestResponse =
-                sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_createFriendlist_negative.txt");
-        Assert.assertEquals(esbRestResponse.getBody().get("error").toString(), apiRestResponse.getBody().get("error")
-                .toString());
-    }
-
-    /**
-     * Positive test case for addMembersToFriendList method with mandatory parameters.
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateFriendlistNegativeCase"}, description = "facebook {addMembersToFriendList} integration test with mandatory parameters.")
-    public void testAddMembersToFriendlistMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:addMembersToFriendList");
-        String deriveFriendsApiEndPoint =
-                "https://graph.facebook.com/me/friends?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > deriveFriendsApiRestResponse =
-                sendJsonRestRequest(deriveFriendsApiEndPoint, "GET", apiRequestHeadersMap);
-        connectorProperties.put("members", deriveFriendsApiRestResponse.getBody().getJSONArray("data").getJSONObject(0)
-                .get("id").toString());
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_addMembersToFriendlist_mandatory.txt");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("friendlistId")
-                        + "/members?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().getJSONArray("data").getJSONObject(0).get("id").toString()
-                .equals(connectorProperties.getProperty("members")));
-    }
-
-    /**
-     * Negative test case for addMembersToFriendList method
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testAddMembersToFriendlistMandatoryParameters"}, description = "facebook {addMembersToFriendList} integration test negative case.")
-    public void testAddMembersToFriendlistNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:addMembersToFriendList");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_addMembersToFriendlist_negative.txt");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("friendlistId")
-                        + "/members";
-        RestResponse< JSONObject > apiRestResponse =
-                sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap,
-                        "api_addMembersToFriendlist_negative.txt");
-        Assert.assertEquals(apiRestResponse.getBody().get("error").toString(), esbRestResponse.getBody().get("error")
-                .toString());
-    }
-
-    /**
-     * Positive test case for removeMembersFromFriendList method with mandatory parameters.
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testAddMembersToFriendlistNegativeCase"}, description = "facebook {removeMembersFromFriendList} integration test with mandatory parameters.")
-    public void testRemoveMembersFromFriendListMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:removeMembersFromFriendList");
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_removeMembersFromFriendList_mandatory.txt");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("friendlistId")
-                        + "/members?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().getJSONArray("data").length() == 0
-                || !(apiRestResponse.getBody().getJSONArray("data").getJSONObject(0).get("id").toString()
-                .equals(connectorProperties.getProperty("members"))));
-    }
-
-    /**
-     * Negative test case for removeMembersFromFriendList
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testRemoveMembersFromFriendListMandatoryParameters"}, description = "facebook {removeMembersFromFriendList} integration test with mandatory parameters.")
-    public void testRemoveMembersFromFriendListNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:removeMembersFromFriendList");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap,
-                        "esb_removeMembersFromFriendList_negative.txt");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("friendlistId")
-                        + "/members?members=invalid12342&access_token="
-                        + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "DELETE", apiRequestHeadersMap);
-        Assert.assertEquals(apiRestResponse.getBody().get("error").toString(), esbRestResponse.getBody().get("error")
-                .toString());
-    }
-
-    /**
      * Positive test case for getFriendListDetails method with mandatory parameters.
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testRemoveMembersFromFriendListNegativeCase"}, description = "facebook {getFriendListDetails} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getFriendListDetails} integration test with mandatory parameters.")
     public void testGetFriendListDetailsMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getFriendListDetails");
         RestResponse< JSONObject > esbRestResponse =
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getFriendListDetails_mandatory.txt");
         String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("friendlistId")
+                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("friendListId")
                         + "?access_token=" + connectorProperties.getProperty("accessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(apiRestResponse.getBody().get("name").toString(), esbRestResponse.getBody().get("name")
+        Assert.assertEquals(apiRestResponse.getBody().get("id").toString(), esbRestResponse.getBody().get("id")
                 .toString());
     }
 
@@ -2867,17 +2136,20 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Positive test case for getFriendListDetails method with optional parameters.
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetFriendListDetailsMandatoryParameters"}, description = "facebook {getFriendListDetails} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetFriendListDetailsMandatoryParameters" },
+          description = "facebook {getFriendListDetails} integration test with optional parameters.")
     public void testGetFriendListDetailsOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getFriendListDetails");
         RestResponse< JSONObject > esbRestResponse =
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getFriendListDetails_optional.txt");
         String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("friendlistId")
-                        + "?fields=id&access_token=" + connectorProperties.getProperty("accessToken");
+                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("friendListId")
+                        + "?fields=name&access_token=" + connectorProperties.getProperty("accessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(apiRestResponse.getBody().get("id").toString(), esbRestResponse.getBody().get("id")
+        Assert.assertEquals(apiRestResponse.getBody().get("name").toString(), esbRestResponse.getBody().get("name")
                 .toString());
     }
 
@@ -2885,7 +2157,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Negative test case for getFriendListDetails method
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetFriendListDetailsOptionalParameters"}, description = "facebook {getFriendListDetails} integration test negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetFriendListDetailsOptionalParameters" },
+          description = "facebook {getFriendListDetails} integration test negative case.")
     public void testGetFriendListDetailsNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getFriendListDetails");
@@ -2895,104 +2170,21 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 "https://graph.facebook.com/invalid12342?fields=id&access_token="
                         + connectorProperties.getProperty("accessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(apiRestResponse.getBody().get("error").toString(), esbRestResponse.getBody().get("error")
-                .toString());
-    }
-
-    /**
-     * Negative test case for deleteFriendList method
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetFriendListDetailsNegativeCase"}, description = "facebook {deleteFriendList} integration test negative case.")
-    public void testDeleteFriendListNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deleteFriendList");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deleteFriendList_negative.txt");
-        String apiEndPoint =
-                "https://graph.facebook.com/invalid12342?access_token="
-                        + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "DELETE", apiRequestHeadersMap);
-        Assert.assertEquals(apiRestResponse.getBody().get("error").toString(), esbRestResponse.getBody().get("error")
-                .toString());
-    }
-
-    /**
-     * Positive test case for deleteFriendList method with mandatory parameters
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testDeleteFriendListNegativeCase"}, description = "facebook {deleteFriendList} integration test with mandatory parameters.")
-    public void testDeleteFriendListMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deleteFriendList");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("friendlistId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > firstApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deleteFriendList_mandatory.txt");
-        RestResponse< JSONObject > secondApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(firstApiRestResponse.getBody().has("id") && secondApiRestResponse.getBody().has("error"));
-    }
-
-    /**
-     * Positive test case for getAppReview method with mandatory parameters
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getAppReview} integration test with mandatory parameters.")
-    public void testGetAppReviewMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:getAppReview");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("appId")
-                        + "/reviews?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getAppReview_mandatory.txt");
-        Assert.assertEquals(apiRestResponse.getBody().get("data").toString(), esbRestResponse.getBody().get("data")
-                .toString());
-    }
-
-    /**
-     * Positive test case for getAppReview method with optional parameters
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetAppReviewMandatoryParameters"}, description = "facebook {getAppReview} integration test with optional parameters.")
-    public void testGetAppReviewOptionalParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:getAppReview");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("appId")
-                        + "/reviews?fields=id&access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getAppReview_optional.txt");
-        Assert.assertEquals(apiRestResponse.getBody().get("data").toString(), esbRestResponse.getBody().get("data")
-                .toString());
-    }
-
-    /**
-     * Negative test case for getAppReview method
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetAppReviewOptionalParameters"}, description = "facebook {getAppReview} integration test negative case.")
-    public void testGetAppReviewNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:getAppReview");
-        String apiEndPoint =
-                "https://graph.facebook.com/invalid12342/reviews?access_token="
-                        + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getAppReview_negative.txt");
-        Assert.assertEquals(apiRestResponse.getBody().get("error").toString(), esbRestResponse.getBody().get("error")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("message").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("code").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("code").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("type").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("type").toString());
     }
 
     /**
      * Positive test case for getUserDetails method with mandatory parameters
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getUserDetails} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getUserDetails} integration test with mandatory parameters.")
     public void testGetUserDetailsMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getUserDetails");
@@ -3009,7 +2201,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Positive test case for getUserDetails method with optional parameters
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getUserDetails} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getUserDetails} integration test with optional parameters.")
     public void testGetUserDetailsOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getUserDetails");
@@ -3027,7 +2221,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Negative test case for getUserDetails method
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getUserDetails} integration test negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getUserDetails} integration test negative case.")
     public void testGetUserDetailsNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getUserDetails");
@@ -3037,15 +2233,21 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         RestResponse< JSONObject > esbRestResponse =
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getUserDetails_negative.txt");
-        Assert.assertEquals(apiRestResponse.getBody().get("error").toString(), esbRestResponse.getBody().get("error")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("message").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("code").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("code").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("type").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("type").toString());
     }
 
     /**
      * Positive test case for createAlbum method with mandatory parameters
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createAlbum} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {createAlbum} integration test with mandatory parameters.")
     public void testCreateAlbumMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:createAlbum");
@@ -3064,7 +2266,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Positive test case for createAlbum method with optional parameters
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAlbumMandatoryParameters"}, description = "facebook {createAlbum} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreateAlbumMandatoryParameters" },
+          description = "facebook {createAlbum} integration test with optional parameters.")
     public void testCreateAlbumOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:createAlbum");
@@ -3083,7 +2288,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Negative test case for createAlbum method
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAlbumOptionalParameters"}, description = "facebook {createAlbum} integration test negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreateAlbumOptionalParameters" },
+          description = "facebook {createAlbum} integration test negative case.")
     public void testCreateAlbumNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:createAlbum");
@@ -3092,15 +2300,22 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         String apiEndPoint = "https://graph.facebook.com/me/albums";
         RestResponse< JSONObject > apiRestResponse =
                 sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_createAlbum_negative.txt");
-        Assert.assertEquals(apiRestResponse.getBody().get("error").toString(), esbRestResponse.getBody().get("error")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("message").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("code").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("code").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("type").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("type").toString());
     }
 
     /**
      * Positive test case for getAlbumDetails method with mandatory parameters
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAlbumNegativeCase"}, description = "facebook {getAlbumDetails} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreateAlbumNegativeCase" },
+          description = "facebook {getAlbumDetails} integration test with mandatory parameters.")
     public void testGetAlbumDetailsMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getAlbumDetails");
@@ -3118,7 +2333,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Positive test case for getAlbumDetails method with optional parameters
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetAlbumDetailsMandatoryParameters"}, description = "facebook {getAlbumDetails} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetAlbumDetailsMandatoryParameters" },
+          description = "facebook {getAlbumDetails} integration test with optional parameters.")
     public void testGetAlbumDetailsOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getAlbumDetails");
@@ -3136,7 +2354,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Negative test case for getAlbumDetails method
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetAlbumDetailsOptionalParameters"}, description = "facebook {getAlbumDetails} integration test negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetAlbumDetailsOptionalParameters" },
+          description = "facebook {getAlbumDetails} integration test negative case.")
     public void testGetAlbumDetailsNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getAlbumDetails");
@@ -3146,62 +2367,14 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 "https://graph.facebook.com/invalid12342?fields=id&access_token="
                         + connectorProperties.getProperty("accessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(apiRestResponse.getBody().get("error").toString(), esbRestResponse.getBody().get("error")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("message").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("code").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("code").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("type").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("type").toString());
     }
 
-    /**
-     * Positive test case for createEvent method with mandatory parameters
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createEvent} integration test with mandatory parameters.")
-    public void testCreateEventMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createEvent");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createEvent_mandatory.txt");
-        String eventId = esbRestResponse.getBody().getString("id");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + eventId + "?access_token="
-                        + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().has("id"));
-    }
-
-    /**
-     * Positive test case for createEvent method with optional parameters
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateEventMandatoryParameters"}, description = "facebook {createEvent} integration test with optional parameters.")
-    public void testCreateEventOptionalParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createEvent");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createEvent_optional.txt");
-        String eventId = esbRestResponse.getBody().getString("id");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + eventId + "?access_token="
-                        + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().has("id"));
-    }
-
-    /**
-     * Negative test case for createEvent method
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateEventOptionalParameters"}, description = "facebook {createEvent} integration test negative case.")
-    public void testCreateEventNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createEvent");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createEvent_negative.txt");
-        String apiEndPoint = "https://graph.facebook.com/me/events";
-        RestResponse< JSONObject > apiRestResponse =
-                sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_createEvent_negative.txt");
-        Assert.assertEquals(apiRestResponse.getBody().get("error").toString(), esbRestResponse.getBody().get("error")
-                .toString());
-    }
 
     /**
      * Positive test case for createPost: post status method with mandatory parameters
@@ -3209,7 +2382,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * @throws InterruptedException
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createPost} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {createPost} integration test with mandatory parameters.")
     public void testCreatePostStatusMandatoryParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:createPost");
@@ -3234,7 +2409,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * @throws InterruptedException
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createPost} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {createPost} integration test with mandatory parameters.")
     public void testCreatePostLinkMandatoryParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:createPost");
@@ -3255,7 +2432,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * @throws InterruptedException
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createPost} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {createPost} integration test with optional parameters.")
     public void testCreatePostLinkOptionalParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:createPost");
@@ -3274,7 +2453,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Negative test case for createPost
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createPost} integration test negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {createPost} integration test negative case.")
     public void testCreatePostNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:createPost");
@@ -3283,15 +2464,22 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         String apiEndPoint = "https://graph.facebook.com/me/feed";
         RestResponse< JSONObject > apiRestResponse =
                 sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_createPost_negative.txt");
-        Assert.assertEquals(apiRestResponse.getBody().get("error").toString(), esbRestResponse.getBody().get("error")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("message").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("code").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("code").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("type").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("type").toString());
     }
 
     /**
      * Positive test case for getPost with mandatory parameters
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreatePostLinkOptionalParameters"}, description = "facebook {getPost} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreatePostLinkOptionalParameters" },
+          description = "facebook {getPost} integration test with mandatory parameters.")
     public void testGetPostMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getPost");
@@ -3301,17 +2489,22 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("postId")
                         + "?access_token=" + connectorProperties.getProperty("accessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(apiRestResponse.getBody().get("id").toString(), esbRestResponse.getBody().get("id")
-                .toString());
-        Assert.assertEquals(apiRestResponse.getBody().get("type").toString(), esbRestResponse.getBody().get("type")
-                .toString());
+        Assert.assertEquals(apiRestResponse.getBody().get("id").toString(),
+                esbRestResponse.getBody().get("id").toString());
+        Assert.assertEquals(apiRestResponse.getBody().get("message").toString(),
+                esbRestResponse.getBody().get("message").toString());
+        Assert.assertEquals(apiRestResponse.getBody().get("created_time").toString(),
+                esbRestResponse.getBody().get("created_time").toString());
     }
 
     /**
      * Positive test case for getPost with optional parameters
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetPostMandatoryParameters"}, description = "facebook {getPost} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetPostMandatoryParameters" },
+          description = "facebook {getPost} integration test with optional parameters.")
     public void testGetPostOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getPost");
@@ -3329,7 +2522,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Negative test case for getPost with optional parameters
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getPost} integration test negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getPost} integration test negative case.")
     public void testGetPostNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getPost");
@@ -3339,15 +2534,22 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 "https://graph.facebook.com/invalid12342?fields=id&access_token="
                         + connectorProperties.getProperty("accessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("error").toString(), apiRestResponse.getBody().get("error")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("message").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("code").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("code").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("type").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("type").toString());
     }
 
     /**
      * Negative test case for deletePost
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetPostOptionalParameters"}, description = "facebook {deletePost} integration test negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testGetPostOptionalParameters" },
+          description = "facebook {deletePost} integration test negative case.")
     public void testDeletePostNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:deletePost");
@@ -3364,7 +2566,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      * Positive test case for deletePost with mandatory parameters
      */
 
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testDeletePostNegativeCase"}, description = "facebook {deletePost} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testDeletePostNegativeCase" },
+          description = "facebook {deletePost} integration test with mandatory parameters.")
     public void testDeletePostMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:deletePost");
@@ -3378,171 +2583,12 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     }
 
     /**
-     * Positive test case for createPageOffer with mandatory parameters
-     *
-     * @throws InterruptedException
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createPageOffer} integration test with mandatory parameters.")
-    public void testCreatePageOfferMandatoryParameters() throws IOException, JSONException, InterruptedException {
-
-        esbRequestHeadersMap.put("Action", "urn:createPageOffer");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createPageOffer_mandatory.txt");
-        connectorProperties.put("offerId", esbRestResponse.getBody().getString("id"));
-        Thread.sleep(timeOut);
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("offerId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().has("id"));
-    }
-
-    /**
-     * Positive test case for createPageOffer with optional parameters
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreatePageOfferMandatoryParameters"}, description = "facebook {createPageOffer} integration test with optional parameters.")
-    public void testCreatePageOfferOptionalParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createPageOffer");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createPageOffer_optional.txt");
-        connectorProperties.put("offerId", esbRestResponse.getBody().getString("id"));
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("offerId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().has("id"));
-    }
-
-    /**
-     * Negative test case for createPageOffer
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {createPageOffer} integration test negative case.")
-    public void testCreatePageOfferNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createPageOffer");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createPageOffer_negative.txt");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("pageId") + "/offers";
-        RestResponse< JSONObject > apiRestResponse =
-                sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_createPageOffer_negative.txt");
-        Assert.assertEquals(apiRestResponse.getBody().get("error").toString(), esbRestResponse.getBody().get("error")
-                .toString());
-    }
-
-    /**
-     * Positive test case for getOfferDetails with mandatory parameters
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreatePageOfferOptionalParameters"}, description = "facebook {getOfferDetails} integration test with mandatory parameters.")
-    public void testGetOfferDetailsMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:getOfferDetails");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("offerId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getOfferDetails_mandatory.txt");
-        Assert.assertEquals(apiRestResponse.getBody().get("id").toString(), esbRestResponse.getBody().get("id")
-                .toString());
-    }
-
-    /**
-     * Positive test case for getOfferDetails with optional parameters
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetOfferDetailsMandatoryParameters"}, description = "facebook {getOfferDetails} integration test with mandatory parameters.")
-    public void testGetOfferDetailsOptionalParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:getOfferDetails");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("offerId")
-                        + "?fields=id&access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getOfferDetails_optional.txt");
-        Assert.assertEquals(apiRestResponse.getBody().get("id").toString(), esbRestResponse.getBody().get("id")
-                .toString());
-    }
-
-    /**
-     * Negative test case for getOfferDetails
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testGetOfferDetailsOptionalParameters"}, description = "facebook {getOfferDetails} integration test negative case.")
-    public void testGetOfferDetailsNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:getOfferDetails");
-        String apiEndPoint =
-                "https://graph.facebook.com/invalid12342?fields=id&access_token="
-                        + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getOfferDetails_negative.txt");
-        Assert.assertEquals(apiRestResponse.getBody().get("error").toString(), esbRestResponse.getBody().get("error")
-                .toString());
-    }
-
-    /**
-     * Positive test case for getInsightMetric with mandatory parameters
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getInsightMetric} integration test with mandatory parameters.")
-    public void testGetInsightMetricMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:getInsightMetric");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("pageId")
-                        + "/insights?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getInsightMetric_mandatory.txt");
-        Assert.assertEquals(esbRestResponse.getBody().get("data").toString(), apiRestResponse.getBody().get("data")
-                .toString());
-    }
-
-    /**
-     * Positive test case for getInsightMetric with optional parameters
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getInsightMetric} integration test with optional parameters.")
-    public void testGetInsightMetricOptionalParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:getInsightMetric");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("pageId")
-                        + "/insights?fields=id&access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getInsightMetric_optional.txt");
-        Assert.assertEquals(esbRestResponse.getBody().get("data").toString(), apiRestResponse.getBody().get("data")
-                .toString());
-    }
-
-    /**
-     * Negative test case for getInsightMetric
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getInsightMetric} integration test negative case.")
-    public void testGetInsightMetricNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:getInsightMetric");
-        String apiEndPoint =
-                "https://graph.facebook.com/invalid12342/insights?fields=id&access_token="
-                        + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getInsightMetric_negative.txt");
-        Assert.assertEquals(apiRestResponse.getBody().get("error").toString(), esbRestResponse.getBody().get("error")
-                .toString());
-    }
-
-    /**
      * Positive test case for createPhotoTag with mandatory parameters
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testUploadPhotoMandatoryParameters"}, description = "facebook {createPhotoTag} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testUploadPhotoMandatoryParameters" },
+          description = "facebook {createPhotoTag} integration test with mandatory parameters.")
     public void testCreatePhotoTagMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:createPhotoTag");
@@ -3551,14 +2597,17 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                         + "/tags?access_token=" + connectorProperties.getProperty("accessToken");
         sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createPhotoTag_mandatory.txt");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(apiRestResponse.getBody().getJSONArray("data").getJSONObject(0).get("id").toString(),
-                connectorProperties.getProperty("friendId"));
+        Assert.assertEquals(apiRestResponse.getBody().getJSONArray("data").getJSONObject(0).get("name").toString(),
+                connectorProperties.getProperty("TagFriendName"));
     }
 
     /**
      * Negative test case for createPhotoTag
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreatePhotoTagMandatoryParameters"}, description = "facebook {createPhotoTag} integration test negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreatePhotoTagMandatoryParameters" },
+          description = "facebook {createPhotoTag} integration test negative case.")
     public void testCreatePhotoTagNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:createPhotoTag");
@@ -3568,77 +2617,12 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createPhotoTag_negative.txt");
         RestResponse< JSONObject > apiRestResponse =
                 sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_createPhotoTag_negative.txt");
-        Assert.assertEquals(apiRestResponse.getBody().get("error").toString(), esbRestResponse.getBody().get("error")
-                .toString());
-    }
-
-    /**
-     * Positive test case for updatePhotoTag with mandatory parameters
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreatePhotoTagNegativeCase"}, description = "facebook {updatePhotoTag} integration test with mandatory parameters.")
-    public void testUpdatePhotoTagMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:updatePhotoTag");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("photoId") + "/tags";
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_updatePhotoTag_mandatory.txt");
-        RestResponse< JSONObject > apiRestResponse =
-                sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_updatePhotoTag_mandatory.txt");
-        Assert.assertEquals(esbRestResponse.getBody().get("output").toString(), apiRestResponse.getBody().get("output")
-                .toString());
-    }
-
-    /**
-     * Negative test case for updatePhotoTag
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testUpdatePhotoTagMandatoryParameters"}, description = "facebook {updatePhotoTag} integration test negative case.")
-    public void testUpdatePhotoTagNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:updatePhotoTag");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("photoId") + "/tags";
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_updatePhotoTag_negative.txt");
-        RestResponse< JSONObject > apiRestResponse =
-                sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_updatePhotoTag_negative.txt");
-        Assert.assertEquals(apiRestResponse.getBody().get("error").toString(), esbRestResponse.getBody().get("error")
-                .toString());
-    }
-
-    /**
-     * Negative test case for deletePhotoTag
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testUpdatePhotoTagNegativeCase"}, description = "facebook {deletePhotoTag} integration test negative case.")
-    public void testDeletePhotoTagNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deletePhotoTag");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("photoId")
-                        + "/tags?access_token=" + connectorProperties.getProperty("accessToken") + "&to="
-                        + connectorProperties.getProperty("friendId");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deletePhotoTag_negative.txt");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "DELETE", apiRequestHeadersMap);
-        Assert.assertEquals(apiRestResponse.getBody().get("error").toString(), esbRestResponse.getBody().get("error")
-                .toString());
-    }
-
-    /**
-     * Negative test case for deletePhoto
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testDeletePhotoTagNegativeCase"}, description = "facebook {deletePhoto} integration test negative case.")
-    public void testDeletePhotoMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deletePhoto");
-
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deletePhoto_negative.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("photoId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().has("error"));
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("message").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("code").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("code").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("type").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("type").toString());
     }
 
     /**
@@ -3646,7 +2630,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws IOException, JSONException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, description = "facebook {getGroupDetails} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getGroupDetails} integration test with mandatory parameters.")
     public void testGetGroupDetailsWithMandatoryParameters() throws IOException, JSONException {
 
         // calling ESB to get group ID
@@ -3669,7 +2655,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws IOException, JSONException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, description = "facebook {getGroupDetails} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getGroupDetails} integration test with optional parameters.")
     public void testGetGroupDetailsWithOptionalParameters() throws IOException, JSONException {
 
         // calling ESB to get group ID
@@ -3691,7 +2679,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws IOException, JSONException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, description = "facebook {getGroupDetails} integration test with negative parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getGroupDetails} integration test with negative parameters.")
     public void testGetGroupDetailsWithNegativeParameters() throws IOException, JSONException {
 
         // calling ESB to get group ID
@@ -3704,74 +2694,12 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 "https://graph.facebook.com/negative" + "?access_token="
                         + connectorProperties.getProperty("accessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("error").toString(), apiRestResponse.getBody().get("error")
-                .toString());
-    }
-
-    /**
-     * Positive test case for getThread method with mandatory parameters.
-     *
-     * @throws IOException, JSONException
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getThread} integration test with mandatory parameters.")
-    public void testGetThreadWithMandatoryParameters() throws IOException, JSONException {
-
-        // calling ESB to get thread
-        esbRequestHeadersMap.put("Action", "urn:getThread");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getThread_mandatory.txt");
-        // calling API to get thread
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("threadId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("id").toString(), apiRestResponse.getBody().get("id")
-                .toString());
-
-    }
-
-    /**
-     * Positive test case for getThread method with optional parameters.
-     *
-     * @throws IOException, JSONException
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getThread} integration test with optional parameters.")
-    public void testGetThreadWithOptionalParameters() throws IOException, JSONException {
-
-        // calling ESB to get thread
-        esbRequestHeadersMap.put("Action", "urn:getThread");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getThread_optional.txt");
-        // calling API to get thread
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("threadId") + "?fields=id&"
-                        + "access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("id").toString(), apiRestResponse.getBody().get("id")
-                .toString());
-    }
-
-    /**
-     * Negative test case for getThread method with mandatory parameters.
-     *
-     * @throws IOException, JSONException
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getThread} integration test with negative parameters.")
-    public void testGetThreadWithNegativeParameters() throws IOException, JSONException {
-
-        // calling ESB to get thread
-        esbRequestHeadersMap.put("Action", "urn:getThread");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getThread_negative.txt");
-        // calling API to get thread
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + "threadId/" + "?access_token="
-                        + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("error").toString(), apiRestResponse.getBody().get("error")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("message").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("code").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("code").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("type").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("type").toString());
     }
 
     /**
@@ -3779,21 +2707,24 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws IOException, JSONException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreatePostStatusMandatoryParameters"}, description = "facebook {getStatus} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreatePostStatusMandatoryParameters" },
+          description = "facebook {getStatus} integration test with mandatory parameters.")
     public void testGetStatusWithMandatoryParameters() throws IOException, JSONException {
 
         // calling ESB to get status
         esbRequestHeadersMap.put("Action", "urn:getStatus");
 
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getStatus_mandatory.txt");
+        RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap,
+                "esb_getStatus_mandatory.txt");
         // calling API to get status
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("statusMessageId")
                         + "?access_token=" + connectorProperties.getProperty("accessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("id").toString(), apiRestResponse.getBody().get("id")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().get("id").toString(),
+                apiRestResponse.getBody().get("id").toString());
         Assert.assertEquals(esbRestResponse.getBody().get("message").toString(),
                 apiRestResponse.getBody().get("message").toString());
     }
@@ -3803,7 +2734,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws IOException, JSONException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreatePostStatusMandatoryParameters"}, description = "facebook {getStatus} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreatePostStatusMandatoryParameters" },
+          description = "facebook {getStatus} integration test with optional parameters.")
     public void testGetStatusWithOptionalParameters() throws IOException, JSONException {
 
         // calling ESB to get status
@@ -3825,7 +2759,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws IOException, JSONException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getStatus} integration test with negative parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getStatus} integration test with negative parameters.")
     public void testGetStatusWithNegativeParameters() throws IOException, JSONException {
 
         // calling ESB to get status
@@ -3838,8 +2774,12 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 "https://graph.facebook.com/negative/" + "?access_token="
                         + connectorProperties.getProperty("accessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("error").toString(), apiRestResponse.getBody().get("error")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("message").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("code").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("code").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("type").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("type").toString());
     }
 
     /**
@@ -3847,7 +2787,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws IOException, JSONException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getMessage} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getMessage} integration test with mandatory parameters.")
     public void testGetMessageWithMandatoryParameters() throws IOException, JSONException {
 
         // calling ESB to get message
@@ -3858,15 +2800,13 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         // calling API to get Message
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("messageId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
+                        + "?access_token=" + connectorProperties.getProperty("pageAccessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
-        Assert.assertEquals(esbRestResponse.getBody().get("id").toString(), apiRestResponse.getBody().get("id")
-                .toString());
-        Assert.assertEquals(esbRestResponse.getBody().get("from").toString(), apiRestResponse.getBody().get("from")
-                .toString());
-        Assert.assertEquals(esbRestResponse.getBody().get("to").toString(), apiRestResponse.getBody().get("to")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().get("id").toString(),
+                apiRestResponse.getBody().get("id").toString());
+        Assert.assertEquals(esbRestResponse.getBody().get("created_time").toString(),
+                apiRestResponse.getBody().get("created_time").toString());
     }
 
     /**
@@ -3874,7 +2814,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws IOException, JSONException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getMessage} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getMessage} integration test with optional parameters.")
     public void testGetMessageWithOptionalParameters() throws IOException, JSONException {
 
         // calling ESB to get message
@@ -3885,10 +2827,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         // calling API to get message
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("messageId")
-                        + "?fields=id&access_token=" + connectorProperties.getProperty("accessToken");
+                        + "?fields=from&access_token=" + connectorProperties.getProperty("pageAccessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("id").toString(), apiRestResponse.getBody().get("id")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().get("from").toString(),
+                apiRestResponse.getBody().get("from").toString());
     }
 
     /**
@@ -3896,7 +2838,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws IOException, JSONException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {getMessage} integration test with negative parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {getMessage} integration test with negative parameters.")
     public void testGetMessageWithNegativeParameters() throws IOException, JSONException {
 
         // calling ESB to get status
@@ -3909,8 +2853,12 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 "https://graph.facebook.com/negative/" + "?access_token="
                         + connectorProperties.getProperty("accessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("error").toString(), apiRestResponse.getBody().get("error")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("message").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("code").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("code").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("type").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("type").toString());
     }
 
     /**
@@ -3918,7 +2866,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws IOException, JSONException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testUploadPhotoMandatoryParameters"}, description = "facebook {getPhotoDetails} integration test with mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testUploadPhotoMandatoryParameters" },
+          description = "facebook {getPhotoDetails} integration test with mandatory parameters.")
     public void testGetPhotoDetailsWithMandatoryParameters() throws IOException, JSONException {
 
         // calling ESB to get Photo Details
@@ -3931,10 +2882,12 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("photoId")
                         + "?access_token=" + connectorProperties.getProperty("accessToken");
         RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("id").toString(), apiRestResponse.getBody().get("id")
-                .toString());
-        Assert.assertEquals(esbRestResponse.getBody().get("from").toString(), apiRestResponse.getBody().get("from")
-                .toString());
+        Assert.assertEquals(esbRestResponse.getBody().get("id").toString(),
+                apiRestResponse.getBody().get("id").toString());
+        Assert.assertEquals(esbRestResponse.getBody().get("name").toString(),
+                apiRestResponse.getBody().get("name").toString());
+        Assert.assertEquals(esbRestResponse.getBody().get("created_time").toString(),
+                apiRestResponse.getBody().get("created_time").toString());
     }
 
     /**
@@ -3942,7 +2895,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws IOException, JSONException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testUploadPhotoMandatoryParameters"}, description = "facebook {getPhotoDetails} integration test with optional parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testUploadPhotoMandatoryParameters" },
+          description = "facebook {getPhotoDetails} integration test with optional parameters.")
     public void testGetPhotoDetailsWithOptionalParameters() throws IOException, JSONException {
 
         // calling ESB to get photo details
@@ -3964,7 +2920,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws IOException, JSONException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testUploadPhotoMandatoryParameters"}, description = "facebook {getPhotoDetails} integration test with negative parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testUploadPhotoMandatoryParameters" },
+          description = "facebook {getPhotoDetails} integration test with negative parameters.")
     public void testGetPhotoDetailsWithNegativeParameters() throws IOException, JSONException {
 
         // calling ESB to get photo details
@@ -3973,138 +2932,24 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         RestResponse< JSONObject > esbRestResponse =
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getPhotoDetails_negative.txt");
         // calling API to get photo details
-        String apiEndPoint =
-                "https://graph.facebook.com/negative" + "?access_token="
-                        + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getBody().get("error").toString(), apiRestResponse.getBody().get("error")
-                .toString());
-    }
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, description = "facebook {createGroupEvent} integration test with mandatory parameters.")
-    public void testCreateGroupEventWithMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createGroupEvent");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createGroupEvent_mandatory.txt");
-        connectorProperties.put("groupEventId", esbRestResponse.getBody().get("id").toString());
-        // read event details
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("groupEventId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().has("id"));
-    }
-
-    /**
-     * Positive test case for createGroupEvent method with optional parameters.
-     *
-     * @throws IOException, JSONException
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, description = "facebook {createGroupEvent} integration test with optional parameters.")
-    public void testCreateGroupEventWithOptionalParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createGroupEvent");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createGroupEvent_optional.txt");
-        connectorProperties.put("groupEventId", esbRestResponse.getBody().get("id").toString());
-        // read event details
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("groupEventId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().has("id"));
-
-    }
-
-    /*
-     * createGroupEvent method with negative parameters.
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, description = "facebook {createGroupEvent} integration test with negative parameters.")
-    public void testCreateGroupEventWithNegativeParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createGroupEvent");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createGroupEvent_negative.txt");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("groupId") + "/events";
-        RestResponse< JSONObject > apiRestResponse =
-                sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_createGroupEvent_negative.txt");
-        Assert.assertEquals(esbRestResponse.getBody().get("error").toString(), apiRestResponse.getBody().get("error")
-                .toString());
-    }
-
-    /**
-     * Positive test case for createGroupPost method with mandatory parameters.
-     *
-     * @throws IOException,         JSONException
-     * @throws InterruptedException
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, description = "facebook {createGroupPost} integration test with mandatory parameters.")
-    public void testCreateGroupPostWithMandatoryParameters() throws IOException, JSONException, InterruptedException {
-
-        esbRequestHeadersMap.put("Action", "urn:createGroupPost");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createGroupPost_mandatory.txt");
-        connectorProperties.put("groupEventPostId", esbRestResponse.getBody().get("id"));
-        Thread.sleep(timeOut);
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl")
-                        + connectorProperties.getProperty("groupEventPostId") + "/?access_token="
-                        + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().has("id"));
-    }
-
-    /**
-     * Positive test case for createGroupPost method with optional parameters.
-     *
-     * @throws IOException,         JSONException
-     * @throws InterruptedException
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, description = "facebook {createGroupPost} integration test with optional parameters.")
-    public void testCreateGroupPostWithOptionalParameters() throws IOException, JSONException, InterruptedException {
-
-        esbRequestHeadersMap.put("Action", "urn:createGroupPost");
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createGroupPost_optional.txt");
-        connectorProperties.put("groupEventPostId", esbRestResponse.getBody().get("id"));
-        Thread.sleep(timeOut);
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl")
-                        + connectorProperties.getProperty("groupEventPostId") + "/?access_token="
-                        + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().has("id"));
-    }
-
-    /*
-     * createGroupPost method with negative parameters.
-     */
-
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAppUserGroupWithMandatoryParameters"}, description = "facebook {createGroupPost} integration test with negative parameters.")
-    public void testCreateGroupPostWithNegativeParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:createGroupPost");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createGroupPost_negative.txt");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("groupId") + "/feed";
-        RestResponse< JSONObject > apiRestResponse =
-                sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_createGroupPost_negative.txt");
-        Assert.assertEquals(esbRestResponse.getBody().get("error").toString(), apiRestResponse.getBody().get("error")
-                .toString());
+        String apiEndPoint = "https://graph.facebook.com/negative" + "?access_token=" + connectorProperties
+                .getProperty("accessToken");
+        RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("message").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("code").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("code").toString());
+        Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("type").toString(),
+                apiRestResponse.getBody().getJSONObject("error").get("type").toString());
     }
 
     /**
      * Positive test case for postPhotoToAlbum
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAlbumMandatoryParameters"}, description = "facebook {postPhotoToAlbum} integration test mandatory parameters.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          dependsOnMethods = { "testCreateAlbumMandatoryParameters" },
+          description = "facebook {postPhotoToAlbum} integration test mandatory parameters.")
     public void testUploadPhotoMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:postPhotoToAlbum");
@@ -4112,7 +2957,8 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         headersMap.put("Action", "urn:postPhotoToAlbum");
 
         MultipartFormdataProcessor multipartProcessor =
-                new MultipartFormdataProcessor(multipartProxyUrl + "?album_id="
+                new MultipartFormdataProcessor(multipartProxyUrl + "?apiUrl=" + connectorProperties.getProperty("apiUrl")
+                        + "&apiVersion=" + connectorProperties.getProperty("apiVersion")+"&album_id="
                         + connectorProperties.getProperty("albumId"), headersMap);
 
         multipartProcessor.addFormDataToRequest("message", "via new ESb");
@@ -4133,101 +2979,20 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     }
 
     /**
-     * Positive test case for updateEventProfilePicture
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreatePageEventWithOptionalParameters"}, description = "facebook {updateEventProfilePicture} integration test negative case.")
-    public void testUpdateEventProfilePictureMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:updateEventProfilePicture");
-
-        headersMap.put("Action", "urn:updateEventProfilePicture");
-
-        MultipartFormdataProcessor multipartProcessor =
-                new MultipartFormdataProcessor(multipartProxyUrl + "?eventId="
-                        + connectorProperties.getProperty("eventId"), headersMap);
-
-        multipartProcessor.addFormDataToRequest("access_token", connectorProperties.getProperty("accessToken"));
-        multipartProcessor.addFileToRequest("source", connectorProperties.getProperty("imageName"));
-
-        RestResponse< JSONObject > esbRestResponse = multipartProcessor.processForJsonResponse();
-        Assert.assertEquals(esbRestResponse.getBody().get("output"), "true");
-
-    }
-
-    /**
-     * Positive test case for postEventPhotos
-     *
-     * @throws InterruptedException
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, dependsOnMethods = {"testCreatePageEventWithOptionalParameters"}, description = "facebook {postEventPhotos} integration test negative case.")
-    public void testPostEventPhotosMandatoryParameters() throws IOException, JSONException, InterruptedException {
-
-        esbRequestHeadersMap.put("Action", "urn:postEventPhotos");
-
-        headersMap.put("Action", "urn:postEventPhotos");
-
-        MultipartFormdataProcessor multipartProcessor =
-                new MultipartFormdataProcessor(multipartProxyUrl + "?eventId="
-                        + connectorProperties.getProperty("eventId"), headersMap);
-
-        multipartProcessor.addFormDataToRequest("message", "via new ESb");
-        multipartProcessor.addFormDataToRequest("access_token", connectorProperties.getProperty("pageAccessToken"));
-        multipartProcessor.addFileToRequest("source", connectorProperties.getProperty("imageName"));
-
-        RestResponse< JSONObject > esbRestResponse = multipartProcessor.processForJsonResponse();
-
-        String photoId = esbRestResponse.getBody().getString("id");
-
-        Thread.sleep(timeOut);
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + photoId + "?access_token="
-                        + connectorProperties.getProperty("pageAccessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().has("id"));
-
-    }
-
-    /**
-     * Positive test case for publishPhoto
-     */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {publishPhoto} integration test negative case.")
-    public void testPublishPhotoMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:publishPhoto");
-
-        headersMap.put("Action", "urn:publishPhoto");
-
-        MultipartFormdataProcessor multipartProcessor =
-                new MultipartFormdataProcessor(multipartProxyUrl + "?user_id="
-                        + connectorProperties.getProperty("userId"), headersMap);
-
-        multipartProcessor.addFormDataToRequest("message", "via new ESb");
-        multipartProcessor.addFormDataToRequest("access_token", connectorProperties.getProperty("accessToken"));
-        multipartProcessor.addFileToRequest("source", connectorProperties.getProperty("imageName"));
-
-        RestResponse< JSONObject > esbRestResponse = multipartProcessor.processForJsonResponse();
-        String photoId = esbRestResponse.getBody().getString("id");
-        connectorProperties.put("photoId", photoId);
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + photoId + "?access_token="
-                        + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(apiRestResponse.getBody().has("id"));
-
-    }
-
-    /**
      * Positive test case for addPhotoToPage
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {addPhotoToPage} integration test negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {addPhotoToPage} integration test negative case.")
     public void testAddPhotoToPageMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:addPhotoToPage");
 
         headersMap.put("Action", "urn:addPhotoToPage");
-        MultipartFormdataProcessor multipartProcessor =
-                new MultipartFormdataProcessor(multipartProxyUrl + "?pageId="
-                        + connectorProperties.getProperty("pageId"), headersMap);
+        MultipartFormdataProcessor multipartProcessor = new MultipartFormdataProcessor(
+                multipartProxyUrl + "?apiUrl=" + connectorProperties.getProperty("apiUrl") + "&apiVersion="
+                        + connectorProperties.getProperty("apiVersion") + "&pageId=" + connectorProperties
+                        .getProperty("pageId"), headersMap);
 
         multipartProcessor.addFormDataToRequest("message", "via new ESb");
         multipartProcessor.addFormDataToRequest("access_token", connectorProperties.getProperty("accessToken"));
@@ -4249,7 +3014,9 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
      *
      * @throws InterruptedException
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {updatePagePicture} integration test negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {updatePagePicture} integration test negative case.")
     public void testUpdatePagePictureMandatoryParameters() throws IOException, JSONException, InterruptedException {
 
         esbRequestHeadersMap.put("Action", "urn:updatePagePicture");
@@ -4257,9 +3024,10 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         headersMap.put("Action", "urn:updatePagePicture");
         Thread.sleep(timeOut);
 
-        MultipartFormdataProcessor multipartProcessor =
-                new MultipartFormdataProcessor(multipartProxyUrl + "?pageId="
-                        + connectorProperties.getProperty("pageId"), headersMap);
+        MultipartFormdataProcessor multipartProcessor = new MultipartFormdataProcessor(
+                multipartProxyUrl + "?apiUrl=" + connectorProperties.getProperty("apiUrl") + "&apiVersion="
+                        + connectorProperties.getProperty("apiVersion") + "&pageId=" + connectorProperties
+                        .getProperty("pageId"), headersMap);
 
         multipartProcessor.addFormDataToRequest("message", "via new ESb");
         multipartProcessor.addFormDataToRequest("access_token", connectorProperties.getProperty("pageAccessToken"));
@@ -4273,15 +3041,18 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
     /**
      * Positive test case for addPageVideo
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "facebook {addPageVideo} integration test negative case.")
+    @Test(priority = 1,
+          groups = { "wso2.esb" },
+          description = "facebook {addPageVideo} integration test negative case.")
     public void testAddPageVideoMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:addPageVideo");
 
         headersMap.put("Action", "urn:addPageVideo");
-        MultipartFormdataProcessor multipartProcessor =
-                new MultipartFormdataProcessor(multipartProxyUrl + "?page_id="
-                        + connectorProperties.getProperty("pageId"), headersMap);
+        MultipartFormdataProcessor multipartProcessor = new MultipartFormdataProcessor(
+                multipartProxyUrl + "?apiUrl=" + connectorProperties.getProperty("apiUrl") + "&apiVersion="
+                        + connectorProperties.getProperty("apiVersion") + "&pageId=" + connectorProperties
+                        .getProperty("pageId"), headersMap);
 
         multipartProcessor.addFormDataToRequest("description", "via new ESb");
         multipartProcessor.addFormDataToRequest("access_token", connectorProperties.getProperty("pageAccessToken"));

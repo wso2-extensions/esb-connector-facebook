@@ -1,7 +1,7 @@
 {
 "apiUrl":"%s(apiUrl)",
 "apiVersion":"%s(apiVersion)",
-"accessToken":"%s(accessToken)",
+"accessToken":"%s(pageAccessToken)",
 "messageId":"%s(messageId)",
-"fields":"id"
+"fields":"from"
 }
