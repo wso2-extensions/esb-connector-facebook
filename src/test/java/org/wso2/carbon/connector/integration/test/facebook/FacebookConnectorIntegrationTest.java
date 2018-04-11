@@ -1223,29 +1223,29 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
 
     }
 
-    /**
-     * Negative test case for deleteAppAchievements method .
-     */
-    @Test(priority = 3,
-          groups = { "wso2.esb" },
-          description = "facebook {deleteAppAchievements} integration test with negative case.")
-    public void testDeleteAppAchievementsWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deleteAppAchievements");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deleteAppAchievements_negative.txt");
-
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("clientId")
-                        + "/achievements?access_token=" + connectorProperties.getProperty("appAccessToken")
-                        + "&achievement=www.invalidAchievement.com/invalid";
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "DELETE", apiRequestHeadersMap);
-
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-
-    }
+//    /**
+//     * Negative test case for deleteAppAchievements method .
+//     */
+//    @Test(priority = 3,
+//          groups = { "wso2.esb" },
+//          description = "facebook {deleteAppAchievements} integration test with negative case.")
+//    public void testDeleteAppAchievementsWithNegativeCase() throws IOException, JSONException {
+//
+//        esbRequestHeadersMap.put("Action", "urn:deleteAppAchievements");
+//
+//        RestResponse< JSONObject > esbRestResponse =
+//                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deleteAppAchievements_negative.txt");
+//
+//        String apiEndPoint =
+//                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("clientId")
+//                        + "/achievements?access_token=" + connectorProperties.getProperty("appAccessToken")
+//                        + "&achievement=www.invalidAchievement.com/invalid";
+//
+//        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "DELETE", apiRequestHeadersMap);
+//
+//        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
+//
+//    }
 
     /**
      * Positive test case for getAppDetails method with mandatory parameters.
@@ -1405,50 +1405,50 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
     }
 
-    /**
-     * Positive test case for unbanAppUser method with mandatory parameters.
-     */
-    @Test(priority = 1,
-          dependsOnMethods = { "testBanAppUserWithMandatoryParameters" },
-          groups = { "wso2.esb" },
-          description = "facebook {unbanAppUser} integration test with mandatory parameters.")
-    public void testUnbanAppUserWithMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:unbanAppUser");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("appId") + "/banned/"
-                        + connectorProperties.getProperty("appUserId") + "?access_token="
-                        + connectorProperties.getProperty("appAccessToken");
-
-        RestResponse< JSONObject > apiRestResponse1 = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_unbanAppUser_mandatory.txt");
-        RestResponse< JSONObject > apiRestResponse2 = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertNotEquals(apiRestResponse1.getBody().getJSONArray("data"), apiRestResponse2.getBody()
-                .getJSONArray("data"));
-
-    }
-
-    /**
-     * Negative test case for unbanAppUser method.
-     */
-    @Test(priority = 1,
-          dependsOnMethods = { "testBanAppUserWithMandatoryParameters" },
-          groups = { "wso2.esb" },
-          description = "facebook {unbanAppUser} integration test with negative case.")
-    public void testUnbanAppUserWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:unbanAppUser");
-        String apiEndPoint =
-                "https://graph.facebook.com/invalid/banned/" + connectorProperties.getProperty("appUserId")
-                        + "?access_token=" + connectorProperties.getProperty("appAccessToken");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_unbanAppUser_negative.txt");
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "DELETE", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-    }
+//    /**
+//     * Positive test case for unbanAppUser method with mandatory parameters.
+//     */
+//    @Test(priority = 1,
+//          dependsOnMethods = { "testBanAppUserWithMandatoryParameters" },
+//          groups = { "wso2.esb" },
+//          description = "facebook {unbanAppUser} integration test with mandatory parameters.")
+//    public void testUnbanAppUserWithMandatoryParameters() throws IOException, JSONException {
+//
+//        esbRequestHeadersMap.put("Action", "urn:unbanAppUser");
+//        String apiEndPoint =
+//                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("appId") + "/banned/"
+//                        + connectorProperties.getProperty("appUserId") + "?access_token="
+//                        + connectorProperties.getProperty("appAccessToken");
+//
+//        RestResponse< JSONObject > apiRestResponse1 = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+//
+//        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_unbanAppUser_mandatory.txt");
+//        RestResponse< JSONObject > apiRestResponse2 = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+//        Assert.assertNotEquals(apiRestResponse1.getBody().getJSONArray("data"), apiRestResponse2.getBody()
+//                .getJSONArray("data"));
+//
+//    }
+//
+//    /**
+//     * Negative test case for unbanAppUser method.
+//     */
+//    @Test(priority = 1,
+//          dependsOnMethods = { "testBanAppUserWithMandatoryParameters" },
+//          groups = { "wso2.esb" },
+//          description = "facebook {unbanAppUser} integration test with negative case.")
+//    public void testUnbanAppUserWithNegativeCase() throws IOException, JSONException {
+//
+//        esbRequestHeadersMap.put("Action", "urn:unbanAppUser");
+//        String apiEndPoint =
+//                "https://graph.facebook.com/invalid/banned/" + connectorProperties.getProperty("appUserId")
+//                        + "?access_token=" + connectorProperties.getProperty("appAccessToken");
+//
+//        RestResponse< JSONObject > esbRestResponse =
+//                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_unbanAppUser_negative.txt");
+//
+//        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "DELETE", apiRequestHeadersMap);
+//        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
+//    }
 
     /**
      * Positive test case for getPageDetails method with mandatory parameters.
@@ -1623,50 +1623,50 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
 
     }
 
-    /**
-     * Positive test case for unblockUserFromPage method with mandatory parameters.
-     */
-    @Test(priority = 1,
-          dependsOnMethods = { "testBlockUserFromPageWithMandatoryParameters" },
-          groups = { "wso2.esb" },
-          description = "facebook {unblockUserFromPage} integration test with mandatory parameters.")
-    public void testUnblockUserFromPageWithMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:unblockUserFromPage");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("pageId") + "/blocked/"
-                        + connectorProperties.getProperty("appUserId") + "?access_token="
-                        + connectorProperties.getProperty("pageAccessToken");
-
-        RestResponse< JSONObject > apiRestResponse1 = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_unblockUserFromPage_mandatory.txt");
-        RestResponse< JSONObject > apiRestResponse2 = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertNotEquals(apiRestResponse1.getBody().getJSONArray("data"), apiRestResponse2.getBody()
-                .getJSONArray("data"));
-
-    }
-
-    /**
-     * Negative test case for unblockUserFromPage method.
-     */
-    @Test(priority = 1,
-          dependsOnMethods = { "testBlockUserFromPageWithMandatoryParameters" },
-          groups = { "wso2.esb" },
-          description = "facebook {unblockUserFromPage} integration test with negative case.")
-    public void testUnblockUserFromPageWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:unblockUserFromPage");
-        String apiEndPoint =
-                "https://graph.facebook.com/invalid/blocked/" + connectorProperties.getProperty("appUserId")
-                        + "?access_token=" + connectorProperties.getProperty("pageAccessToken");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_unblockUserFromPage_negative.txt");
-
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "DELETE", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-    }
+//    /**
+//     * Positive test case for unblockUserFromPage method with mandatory parameters.
+//     */
+//    @Test(priority = 1,
+//          dependsOnMethods = { "testBlockUserFromPageWithMandatoryParameters" },
+//          groups = { "wso2.esb" },
+//          description = "facebook {unblockUserFromPage} integration test with mandatory parameters.")
+//    public void testUnblockUserFromPageWithMandatoryParameters() throws IOException, JSONException {
+//
+//        esbRequestHeadersMap.put("Action", "urn:unblockUserFromPage");
+//        String apiEndPoint =
+//                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("pageId") + "/blocked/"
+//                        + connectorProperties.getProperty("appUserId") + "?access_token="
+//                        + connectorProperties.getProperty("pageAccessToken");
+//
+//        RestResponse< JSONObject > apiRestResponse1 = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+//
+//        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_unblockUserFromPage_mandatory.txt");
+//        RestResponse< JSONObject > apiRestResponse2 = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+//        Assert.assertNotEquals(apiRestResponse1.getBody().getJSONArray("data"), apiRestResponse2.getBody()
+//                .getJSONArray("data"));
+//
+//    }
+//
+//    /**
+//     * Negative test case for unblockUserFromPage method.
+//     */
+//    @Test(priority = 1,
+//          dependsOnMethods = { "testBlockUserFromPageWithMandatoryParameters" },
+//          groups = { "wso2.esb" },
+//          description = "facebook {unblockUserFromPage} integration test with negative case.")
+//    public void testUnblockUserFromPageWithNegativeCase() throws IOException, JSONException {
+//
+//        esbRequestHeadersMap.put("Action", "urn:unblockUserFromPage");
+//        String apiEndPoint =
+//                "https://graph.facebook.com/invalid/blocked/" + connectorProperties.getProperty("appUserId")
+//                        + "?access_token=" + connectorProperties.getProperty("pageAccessToken");
+//
+//        RestResponse< JSONObject > esbRestResponse =
+//                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_unblockUserFromPage_negative.txt");
+//
+//        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "DELETE", apiRequestHeadersMap);
+//        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
+//    }
 
     /**
      * Positive test case for publishPagePost method with mandatory parameters.
@@ -1874,49 +1874,49 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
     }
 
-    /**
-     * Positive test case for deleteAppUserRole method with mandatory parameters.
-     */
-    @Test(priority = 1,
-          dependsOnMethods = { "testgetAppAccessTokenWithMandatoryParameters" },
-          groups = { "wso2.esb" },
-          description = "facebook {deleteAppUserRole} integration test with optional parameters.")
-    public void testDeleteAppUserRoleWithMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deleteAppUserRole");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("appId")
-                        + "/roles?access_token=" + connectorProperties.getProperty("appAccessToken");
-        RestResponse< JSONObject > apiRestResponse1 = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deleteAppUserRole_mandatory.txt");
-
-        RestResponse< JSONObject > apiRestResponse2 = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-
-        Assert.assertNotEquals(apiRestResponse1.getBody().getJSONArray("data"), apiRestResponse2.getBody()
-                .getJSONArray("data"));
-    }
-
-    /**
-     * Negative test case for deleteAppUserRole method.
-     */
-    @Test(priority = 1,
-          groups = { "wso2.esb" },
-          dependsOnMethods = { "testgetAppAccessTokenWithMandatoryParameters" },
-          description = "facebook {deleteAppUserRole} integration test with negative case.")
-    public void testDeleteAppUserRoleWithNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deleteAppUserRole");
-
-        RestResponse< JSONObject > esbRestResponse =
-                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deleteAppUserRole_negative.txt");
-        String apiEndPoint =
-                "https://graph.facebook.com/invalid/roles?access_token="
-                        + connectorProperties.getProperty("appAccessToken");
-        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
-    }
-
+//    /**
+//     * Positive test case for deleteAppUserRole method with mandatory parameters.
+//     */
+//    @Test(priority = 1,
+//          dependsOnMethods = { "testgetAppAccessTokenWithMandatoryParameters" },
+//          groups = { "wso2.esb" },
+//          description = "facebook {deleteAppUserRole} integration test with optional parameters.")
+//    public void testDeleteAppUserRoleWithMandatoryParameters() throws IOException, JSONException {
+//
+//        esbRequestHeadersMap.put("Action", "urn:deleteAppUserRole");
+//        String apiEndPoint =
+//                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("appId")
+//                        + "/roles?access_token=" + connectorProperties.getProperty("appAccessToken");
+//        RestResponse< JSONObject > apiRestResponse1 = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+//
+//        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deleteAppUserRole_mandatory.txt");
+//
+//        RestResponse< JSONObject > apiRestResponse2 = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+//
+//        Assert.assertNotEquals(apiRestResponse1.getBody().getJSONArray("data"), apiRestResponse2.getBody()
+//                .getJSONArray("data"));
+//    }
+//
+//    /**
+//     * Negative test case for deleteAppUserRole method.
+//     */
+//    @Test(priority = 1,
+//          groups = { "wso2.esb" },
+//          dependsOnMethods = { "testgetAppAccessTokenWithMandatoryParameters" },
+//          description = "facebook {deleteAppUserRole} integration test with negative case.")
+//    public void testDeleteAppUserRoleWithNegativeCase() throws IOException, JSONException {
+//
+//        esbRequestHeadersMap.put("Action", "urn:deleteAppUserRole");
+//
+//        RestResponse< JSONObject > esbRestResponse =
+//                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deleteAppUserRole_negative.txt");
+//        String apiEndPoint =
+//                "https://graph.facebook.com/invalid/roles?access_token="
+//                        + connectorProperties.getProperty("appAccessToken");
+//        RestResponse< JSONObject > apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+//        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
+//    }
+//
 
     @Test(priority = 1,
           groups = { "wso2.esb" },
@@ -2072,46 +2072,46 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 apiRestResponse.getBody().getJSONObject("error").get("type").toString());
     }
 
-    /**
-     * Negative test case for deletePageMilestone method
-     */
-
-    @Test(priority = 1,
-          groups = { "wso2.esb" },
-          dependsOnMethods = { "testUpdatePageMilestoneNegativeCase" },
-          description = "facebook {deletePageMilestone} integration test negative case.")
-    public void testDeletePageMilestoneNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deletePageMilestone");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("milestoneId")
-                        + "?access_token=" + connectorProperties.getProperty("pageAccessToken");
-        RestResponse< JSONObject > firstApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deletePageMilestone_negative.txt");
-        RestResponse< JSONObject > secondApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(firstApiRestResponse.getBody().has("id") && secondApiRestResponse.getBody().has("id"));
-    }
-
-    /**
-     * Positive test case for deletePageMilestone method with mandatory parameters
-     */
-
-    @Test(priority = 1,
-          groups = { "wso2.esb" },
-          dependsOnMethods = { "testDeletePageMilestoneNegativeCase" },
-          description = "facebook {deletePageMilestone} integration test with optional parameters.")
-    public void testDeletePageMilestoneMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deletePageMilestone");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("milestoneId")
-                        + "?access_token=" + connectorProperties.getProperty("pageAccessToken");
-        RestResponse< JSONObject > firstApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deletePageMilestone_mandatory.txt");
-        RestResponse< JSONObject > secondApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(firstApiRestResponse.getBody().has("id") && secondApiRestResponse.getBody().has("error"));
-    }
-
+//    /**
+//     * Negative test case for deletePageMilestone method
+//     */
+//
+//    @Test(priority = 1,
+//          groups = { "wso2.esb" },
+//          dependsOnMethods = { "testUpdatePageMilestoneNegativeCase" },
+//          description = "facebook {deletePageMilestone} integration test negative case.")
+//    public void testDeletePageMilestoneNegativeCase() throws IOException, JSONException {
+//
+//        esbRequestHeadersMap.put("Action", "urn:deletePageMilestone");
+//        String apiEndPoint =
+//                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("milestoneId")
+//                        + "?access_token=" + connectorProperties.getProperty("pageAccessToken");
+//        RestResponse< JSONObject > firstApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+//        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deletePageMilestone_negative.txt");
+//        RestResponse< JSONObject > secondApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+//        Assert.assertTrue(firstApiRestResponse.getBody().has("id") && secondApiRestResponse.getBody().has("id"));
+//    }
+//
+//    /**
+//     * Positive test case for deletePageMilestone method with mandatory parameters
+//     */
+//
+//    @Test(priority = 1,
+//          groups = { "wso2.esb" },
+//          dependsOnMethods = { "testDeletePageMilestoneNegativeCase" },
+//          description = "facebook {deletePageMilestone} integration test with optional parameters.")
+//    public void testDeletePageMilestoneMandatoryParameters() throws IOException, JSONException {
+//
+//        esbRequestHeadersMap.put("Action", "urn:deletePageMilestone");
+//        String apiEndPoint =
+//                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("milestoneId")
+//                        + "?access_token=" + connectorProperties.getProperty("pageAccessToken");
+//        RestResponse< JSONObject > firstApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+//        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deletePageMilestone_mandatory.txt");
+//        RestResponse< JSONObject > secondApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+//        Assert.assertTrue(firstApiRestResponse.getBody().has("id") && secondApiRestResponse.getBody().has("error"));
+//    }
+//
     /**
      * Positive test case for getFriendListDetails method with mandatory parameters.
      */
@@ -2542,45 +2542,45 @@ public class FacebookConnectorIntegrationTest extends ConnectorIntegrationTestBa
                 apiRestResponse.getBody().getJSONObject("error").get("type").toString());
     }
 
-    /**
-     * Negative test case for deletePost
-     */
-
-    @Test(priority = 1,
-          groups = { "wso2.esb" },
-          dependsOnMethods = { "testGetPostOptionalParameters" },
-          description = "facebook {deletePost} integration test negative case.")
-    public void testDeletePostNegativeCase() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deletePost");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("postId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > firstApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deletePost_negative.txt");
-        RestResponse< JSONObject > secondApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(firstApiRestResponse.getBody().has("id") && secondApiRestResponse.getBody().has("id"));
-    }
-
-    /**
-     * Positive test case for deletePost with mandatory parameters
-     */
-
-    @Test(priority = 1,
-          groups = { "wso2.esb" },
-          dependsOnMethods = { "testDeletePostNegativeCase" },
-          description = "facebook {deletePost} integration test with mandatory parameters.")
-    public void testDeletePostMandatoryParameters() throws IOException, JSONException {
-
-        esbRequestHeadersMap.put("Action", "urn:deletePost");
-        String apiEndPoint =
-                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("postId")
-                        + "?access_token=" + connectorProperties.getProperty("accessToken");
-        RestResponse< JSONObject > firstApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deletePost_mandatory.txt");
-        RestResponse< JSONObject > secondApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        Assert.assertTrue(firstApiRestResponse.getBody().has("id") && secondApiRestResponse.getBody().has("error"));
-    }
+//    /**
+//     * Negative test case for deletePost
+//     */
+//
+//    @Test(priority = 1,
+//          groups = { "wso2.esb" },
+//          dependsOnMethods = { "testGetPostOptionalParameters" },
+//          description = "facebook {deletePost} integration test negative case.")
+//    public void testDeletePostNegativeCase() throws IOException, JSONException {
+//
+//        esbRequestHeadersMap.put("Action", "urn:deletePost");
+//        String apiEndPoint =
+//                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("postId")
+//                        + "?access_token=" + connectorProperties.getProperty("accessToken");
+//        RestResponse< JSONObject > firstApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+//        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deletePost_negative.txt");
+//        RestResponse< JSONObject > secondApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+//        Assert.assertTrue(firstApiRestResponse.getBody().has("id") && secondApiRestResponse.getBody().has("id"));
+//    }
+//
+//    /**
+//     * Positive test case for deletePost with mandatory parameters
+//     */
+//
+//    @Test(priority = 1,
+//          groups = { "wso2.esb" },
+//          dependsOnMethods = { "testDeletePostNegativeCase" },
+//          description = "facebook {deletePost} integration test with mandatory parameters.")
+//    public void testDeletePostMandatoryParameters() throws IOException, JSONException {
+//
+//        esbRequestHeadersMap.put("Action", "urn:deletePost");
+//        String apiEndPoint =
+//                connectorProperties.getProperty("apiUrl") + connectorProperties.getProperty("postId")
+//                        + "?access_token=" + connectorProperties.getProperty("accessToken");
+//        RestResponse< JSONObject > firstApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+//        sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_deletePost_mandatory.txt");
+//        RestResponse< JSONObject > secondApiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+//        Assert.assertTrue(firstApiRestResponse.getBody().has("id") && secondApiRestResponse.getBody().has("error"));
+//    }
 
     /**
      * Positive test case for createPhotoTag with mandatory parameters

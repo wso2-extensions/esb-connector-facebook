@@ -7,10 +7,9 @@ Product: WSO2 ESB Connector for Facebook + Integration Tests
     Tested Platforms: 
 
     - UBUNTU 16.04, Mac OSX 10.9
-    - Ubuntu 13.04
-    - WSO2 ESB 6.1.1
+    - WSO2 EI 6.2.0
     
- 1. Download EI 6.1.1 from official website.
+ 1. Download EI 6.2.0 from official website.
 
  2. The EI should be configured as below.
 
@@ -45,7 +44,7 @@ Product: WSO2 ESB Connector for Facebook + Integration Tests
         NOTE : CERT_FILE_NAME is the file name which was extracted from facebook with  the extension,
                change it accordingly. Remove the copied certificate.
 
-        "WSO2-EI-6.1.1/repository/resources/security"
+        "<EI_HOME>/repository/resources/security"
 
         Navigate to the above location from command prompt and execute
          'keytool -importcert -file CERT_FILE_NAME -keystore client-truststore.jks -alias "facebook"'
@@ -57,9 +56,9 @@ Product: WSO2 ESB Connector for Facebook + Integration Tests
 Steps to follow in setting integration test.
 
 
- 3. Compress modified EI as wso2ei-6.1.1.zip and copy that zip file in to location "{ESB_Connector_Home}/repository/".
+ 5. Compress modified EI as wso2ei-6.2.0.zip and copy that zip file in to location "{ESB_Connector_Home}/repository/".
 
- 5. Update the Facebook properties file at location
+ 6. Update the Facebook properties file at location
     "{Connector_Home}/src/test/resources/artifacts/ESB/connector/config" as below.
 
      Note:
@@ -209,6 +208,6 @@ Steps to follow in setting integration test.
 
         52)   eventId is the id of the created event.
         
- 8. Navigate to "{EI_Connector_Home}/" and run the following command.
+ 7. Navigate to "{EI_Connector_Home}/" and run the following command.
        $ mvn clean install
 
